@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "sso_db"
+      POSTGRES_USER: "test_user"
+      POSTGRES_PASSWORD: "test_password"
+    ports:
+      - "5432:5432"
