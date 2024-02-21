@@ -1,25 +1,68 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
+      project: 'tsconfig.json',
+      sourceType: 'module',
+      tsconfigRootDir: __dirname,
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'nestjs', 'import', 'filenames'],
+
   extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
+      'eslint:recommended',
+      'standard',
+      'plugin:@typescript-eslint/recommended',
+      'plugin:prettier/recommended',
   ],
-  root: true,
-  env: {
-    node: true,
-    jest: true,
-  },
-  ignorePatterns: ['.eslintrc.js'],
+
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+      // Именование файлов
+      'filenames/match-exported': [2, ['kebab']],
+      'filenames/no-index': 'error',
+
+      // Именование объектов
+      '@typescript-eslint/naming-convention': [
+          'error',
+          {
+              selector: 'default',
+              format: ['camelCase'],
+          },
+          {
+              selector: 'variable',
+              format: ['camelCase', 'UPPER_CASE'],
+          },
+          {
+              selector: 'parameter',
+              format: ['camelCase'],
+          },
+          {
+              selector: 'memberLike',
+              modifiers: ['private'],
+              format: ['camelCase'],
+              leadingUnderscore: 'require',
+          },
+          {
+              selector: 'typeLike',
+              format: ['PascalCase'],
+          },
+      ],
+
+      // Правила NestJS
+      'nestjs/use-dependency-injection': 'error',
+      'nestjs/deprecated-api-modules': 'error',
+
+      // Чистый код
+      'complexity': 'error',
+      'max-depth': 'error',
+      'no-console': 'warn',
+
+      // DDD
+      'import/no-cycle': 'error',
+      'no-restricted-imports': 'error',
+      '@typescript-eslint/prefer-readonly': 'error',
+
+      // Остальные правила
+      'import/no-extraneous-dependencies': 'error',
+      'no-useless-constructor': 'off',
+      // etc
   },
 };
