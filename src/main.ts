@@ -11,7 +11,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
         .setTitle('Parts Lib')
         .setDescription('The Parts library')
-        .setVersion('1.0')
+        // .setVersion('1.0')
         .addTag('Parts')
         .build();
     const document = SwaggerModule.createDocument(app, config);
