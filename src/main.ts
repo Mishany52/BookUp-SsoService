@@ -7,7 +7,6 @@ async function bootstrap() {
     const PORT = process.env.API_PORT || 3000;
     const logger = new SSOLogger();
     const app = await NestFactory.create(AppModule);
-
     const config = new DocumentBuilder()
         .setTitle('Parts Lib')
         .setDescription('The Parts library')
@@ -16,7 +15,6 @@ async function bootstrap() {
         .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
-
     await app.listen(PORT);
     logger.verbose(`Parts service start on port: ${PORT}`);
 }

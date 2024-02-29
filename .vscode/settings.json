@@ -1,5 +1,10 @@
 {
   "cSpell.words": [
+    "mishany",
     "typeorm"
-  ]
+  ],
+  "eslint.workingDirectories": [
+    "src"
+  ],
+  "cSpell.language": "en,ru-RU"
 }

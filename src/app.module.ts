@@ -18,7 +18,7 @@ import { Profile } from './api/http/account/entities/profile.entity';
             database: process.env.DB_DATABASE,
             synchronize: true,
             autoLoadEntities: true,
-            entities: [Account, Profile]
+            entities: [Account, Profile],
         }),
         AccountModule,
     ],
