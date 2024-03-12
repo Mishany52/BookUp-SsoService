@@ -12,8 +12,8 @@ const AppDataSource = new DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    synchronize: false,
-    migrations: [path.join(__dirname, 'infrastructure', 'postgres', 'migrations', '/*.ts')],
+    synchronize: true,
+    migrations: [path.join(__dirname, 'Infrastructure', 'postgres', 'migrations', '/*.ts')],
     entities: [path.join(__dirname, '/../**/*.entity.ts')],
 });
 

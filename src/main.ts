@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { SSOLogger } from './infrastructure/logger/logger';
+import { SSOLogger } from './Infrastructure/logger/logger';
 
 async function bootstrap() {
     const PORT = process.env.API_PORT || 3000;

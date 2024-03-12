@@ -1,26 +1,26 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccountModule } from './api/http/account/account.module';
-import { Account } from './api/http/account/entities/account.entity';
-import { Profile } from './api/http/account/entities/profile.entity';
+import { UserModule } from './domains/user/UserModule';
+import { UserEntity } from './Infrastructure/repository/User/user.entity';
+import { Profile } from './Infrastructure/repository/Profile/profile.entity';
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: '.env',
+            envFilePath: `.development.env`,
         }),
         TypeOrmModule.forRoot({
             type: 'postgres',
-            host: process.env.DB_HOST,
-            port: 5432,
-            username: process.env.DB_USERNAME,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: parseInt(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DB,
             synchronize: true,
             autoLoadEntities: true,
-            entities: [Account, Profile],
+            entities: [UserEntity, Profile],
         }),
-        AccountModule,
+        UserModule,
     ],
 })
 export class AppModule {}
