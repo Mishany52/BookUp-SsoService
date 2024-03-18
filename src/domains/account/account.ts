@@ -1,5 +1,5 @@
-import { UserRole } from './UserRole';
-export type User = {
+import { AccountRole } from './account-role';
+export type Account = {
     id: string;
     firstName: string;
     patronymic: string;
@@ -8,5 +8,5 @@ export type User = {
     password: string;
     phone: string;
     imgUlr: string;
-    role: UserRole;
+    role: AccountRole;
 };

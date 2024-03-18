@@ -1,15 +1,15 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
-import { User } from 'src/domains/user/User';
+import { Account } from './account';
 import { SignUpDto } from 'src/api/http/dto/sign-up.dto';
 // import { Repository } from 'typeorm';
-import { IUserRepository } from './IUserRepository';
+import { IAccountRepository } from './accountI.repository';
 import * as argon2 from 'argon2';
 
-const userRepo = () => Inject('userRepo');
+const accountRepo = () => Inject('accountRepo');
 
 @Injectable()
-export class UserService {
-    constructor(@userRepo() private readonly _userRepository: IUserRepository) {}
+export class AccountService {
+    constructor(@accountRepo() private readonly _accountRepository: IAccountRepository) {}
     async checkPassword(plainPassword: string): Promise<boolean> {
         try {
             if (await argon2.verify('<big long hash>', plainPassword)) {
@@ -27,12 +27,12 @@ export class UserService {
             return await argon2.hash(password);
         }
     }
-    async create(data: SignUpDto): Promise<User> {
-        const tmp = await this._userRepository.getByEmailAndPhone(data);
+    async create(data: SignUpDto): Promise<Account> {
+        const tmp = await this._accountRepository.getByEmailAndPhone(data);
         if (!tmp) {
             const hashPass = await this.hashPasswordFunc(data.password);
             data.password = hashPass;
-            return await this._userRepository.create(data);
+            return await this._accountRepository.create(data);
         }
         throw new BadRequestException('Email or phone already exists');
     }

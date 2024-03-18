@@ -1,10 +1,9 @@
 import { Exclude } from 'class-transformer';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
-import { Profile } from '../Profile/profile.entity';
-import { UserRole } from 'src/domains/user/UserRole';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { AccountRole } from 'src/domains/account/account-role';
 
-@Entity({ name: 'users' })
-export class UserEntity {
+@Entity({ name: 'accounts' })
+export class AccountEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -36,12 +35,8 @@ export class UserEntity {
 
     @Column({
         type: 'enum',
-        enum: UserRole,
-        default: UserRole.client,
+        enum: AccountRole,
+        default: AccountRole.client,
     })
-    role: UserRole;
-
-    @OneToOne(() => Profile)
-    @JoinColumn()
-    profile: Profile;
+    role: AccountRole;
 }
