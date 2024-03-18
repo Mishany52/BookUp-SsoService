@@ -6,7 +6,7 @@ import { AccountEntity } from './Infrastructure/repository/account/account.entit
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: `.env`,
+            envFilePath: '.env',
         }),
         TypeOrmModule.forRoot({
             type: 'postgres',
@@ -15,7 +15,7 @@ import { AccountEntity } from './Infrastructure/repository/account/account.entit
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            synchronize: true,
+            synchronize: false,
             autoLoadEntities: true,
             entities: [AccountEntity],
         }),
