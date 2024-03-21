@@ -1,9 +1,10 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
-import { Account } from './account';
-import { SignUpDto } from 'src/api/http/dto/sign-up.dto';
+import { Injectable, Inject } from '@nestjs/common';
+import { Account } from '../../Infrastructure/types/account';
+
 // import { Repository } from 'typeorm';
 import { IAccountRepository } from './accountI.repository';
 import * as argon2 from 'argon2';
+import { CreateAccountDto } from './dtos/create-account.dto';
 
 const accountRepo = () => Inject('accountRepo');
 
@@ -22,18 +23,23 @@ export class AccountService {
             // internal failure
         }
     }
-    async hashPasswordFunc(password: string): Promise<string> {
-        if (!/^\$2[abxy]?\$\d+\$/.test(password)) {
-            return await argon2.hash(password);
-        }
+
+    async create(account: CreateAccountDto): Promise<Account> {
+        const encrypted = account;
+        encrypted.password = await argon2.hash(encrypted.password);
+        return await this._accountRepository.create(encrypted);
     }
-    async create(data: SignUpDto): Promise<Account> {
-        const tmp = await this._accountRepository.getByEmailAndPhone(data);
-        if (!tmp) {
-            const hashPass = await this.hashPasswordFunc(data.password);
-            data.password = hashPass;
-            return await this._accountRepository.create(data);
+    async isAccount(accountData: Partial<Account>): Promise<boolean> {
+        if (!accountData.email && !accountData.phone) {
+            return null;
         }
-        throw new BadRequestException('Email or phone already exists');
+        const account = await this._accountRepository.getByEmailAndPhone(accountData);
+        if (account) {
+            return true;
+        }
+        return false;
+    }
+    async getAccounts(): Promise<Account[]> {
+        return await this._accountRepository.getAccounts();
     }
 }

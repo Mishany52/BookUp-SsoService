@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from './domains/account/account.module';
+import { AuthModule } from './domains/auth/auth.module';
 import { AccountEntity } from './Infrastructure/repository/account/account.entity';
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { AccountEntity } from './Infrastructure/repository/account/account.entit
             entities: [AccountEntity],
         }),
         AccountModule,
+        AuthModule,
     ],
 })
 export class AppModule {}

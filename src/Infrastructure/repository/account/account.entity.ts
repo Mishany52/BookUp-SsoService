@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { AccountRole } from 'src/domains/account/account-role';
+import { AccountRole } from 'src/domains/account/enums/account-role';
 
 @Entity({ name: 'accounts' })
 export class AccountEntity {

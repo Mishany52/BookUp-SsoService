@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Account } from 'src/domains/account/account';
+import { Account } from 'src/Infrastructure/types/account';
 import { AccountEntity } from './account.entity';
-import { SignUpDto } from 'src/api/http/dto/sign-up.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IAccountRepository } from 'src/domains/account/accountI.repository';
 import { Repository } from 'typeorm';
+import { CreateAccountDto } from 'src/domains/account/dtos/create-account.dto';
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
@@ -13,8 +13,8 @@ export class AccountRepository implements IAccountRepository {
         private readonly _accountRepository: Repository<AccountEntity>,
     ) {}
 
-    async create(data: SignUpDto): Promise<Account> {
-        const account = this._accountRepository.create(data);
+    async create(createDto: CreateAccountDto): Promise<Account> {
+        const account = this._accountRepository.create(createDto);
         try {
             await this._accountRepository.save(account);
             //!Потом сменить на mapper
@@ -24,7 +24,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error("User doesn't create");
         }
     }
-    async getByEmailAndPhone(accountData: Partial<Account>): Promise<Account> {
+    async getByEmailAndPhone(accountData: Partial<Account>): Promise<Account | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: [{ email: accountData.email }, { phone: accountData.phone }],
@@ -34,7 +34,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error('This mistake appeared when to find user by email&phone');
         }
     }
-    async getById(accountId: string): Promise<Account> {
+    async getById(accountId: string): Promise<Account | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: { id: accountId },
@@ -43,5 +43,13 @@ export class AccountRepository implements IAccountRepository {
         } catch (error) {
             throw new Error('Account does not find by id');
         }
+    }
+
+    async getAccounts(): Promise<Account[]> {
+        //!Когда сессию сделаю будем возвращать только активных пользователей
+        // return await this._accountRepository.find({
+        //     relations: ['sessions'],
+        // });
+        return await this._accountRepository.find({});
     }
 }
