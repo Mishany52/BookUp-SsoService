@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccountModule } from './api/http/account/account.module';
+import { AccountModule } from './domains/account/account.module';
+import { AuthModule } from './domains/auth/auth.module';
+import { AccountEntity } from './Infrastructure/repository/account/account.entity';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -9,15 +11,17 @@ import { AccountModule } from './api/http/account/account.module';
         }),
         TypeOrmModule.forRoot({
             type: 'postgres',
-            host: process.env.DB_HOST,
-            port: 5432,
-            username: process.env.DB_USERNAME,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE,
+            host: process.env.POSTGRES_HOST,
+            port: parseInt(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DB,
             synchronize: false,
             autoLoadEntities: true,
+            entities: [AccountEntity],
         }),
         AccountModule,
+        AuthModule,
     ],
 })
 export class AppModule {}
