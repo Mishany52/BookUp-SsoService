@@ -1,12 +1,25 @@
-FROM node:lts-alpine3.19
+FROM node:latest
 
-run yarn install
 
-run yarn run typeorm migration:run
+WORKDIR /app
 
-run yarn run build
 
-run yarn run start:prod
+COPY package.json yarn.lock ./
+
+
+RUN yarn install
+
+
+COPY . .
+
+
+RUN yarn run build
+
+
+RUN yarn run migration_run
+
+
+CMD ["yarn", "run","start:prod"]
 
 
 expose 80
