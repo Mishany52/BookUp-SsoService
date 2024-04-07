@@ -1,27 +1,25 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { AccountModule } from './domains/account/account.module';
 import { AuthModule } from './domains/auth/auth.module';
-import { AccountEntity } from './Infrastructure/repository/account/account.entity';
+import { configuration } from './config/configuration';
+import { TokensModule } from './domains/token/token.module';
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: '.env',
+            isGlobal: true,
+            load: [configuration],
         }),
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            host: process.env.POSTGRES_HOST,
-            port: parseInt(process.env.POSTGRES_PORT),
-            username: process.env.POSTGRES_USER,
-            password: process.env.POSTGRES_PASSWORD,
-            database: process.env.POSTGRES_DB,
-            synchronize: false,
-            autoLoadEntities: true,
-            entities: [AccountEntity],
+        TypeOrmModule.forRootAsync({
+            useFactory: (config: ConfigService) => ({
+                ...config.get<TypeOrmModuleAsyncOptions>('db'),
+            }),
+            inject: [ConfigService],
         }),
         AccountModule,
         AuthModule,
+        TokensModule,
     ],
 })
 export class AppModule {}

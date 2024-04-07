@@ -3,17 +3,18 @@
 import * as path from 'path';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-config();
+
+config({ path: '.env' });
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const AppDataSource = new DataSource({
     type: 'postgres',
-    host: process.env.DB_HOST,
-    port: 5432,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    host: process.env.POSTGRES_HOST,
+    port: parseInt(process.env.PORT),
+    username: `${process.env.POSTGRES_USER}`,
+    password: `${process.env.POSTGRES_PASSWORD}`,
+    database: `${process.env.POSTGRES_DB}`,
     synchronize: false,
-    migrations: [path.join(__dirname, 'Infrastructure', 'postgres', 'migrations', '/*.ts')],
+    migrations: [path.join(__dirname, 'infrastructure', 'postgres', 'migrations', '/*.ts')],
     entities: [path.join(__dirname, '/../**/*.entity.ts')],
 });
 
