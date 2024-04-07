@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Account } from '../../Infrastructure/types/account';
+import { Account } from '../../infrastructure/types/account';
 
 // import { Repository } from 'typeorm';
-import { IAccountRepository } from './accountI.repository';
+import { IAccountRepository } from './account.repository.interface';
 import * as argon2 from 'argon2';
 import { CreateAccountDto } from './dtos/create-account.dto';
 
@@ -11,23 +11,26 @@ const accountRepo = () => Inject('accountRepo');
 @Injectable()
 export class AccountService {
     constructor(@accountRepo() private readonly _accountRepository: IAccountRepository) {}
-    async checkPassword(plainPassword: string): Promise<boolean> {
+
+    async checkPassword(plainPassword: string, checkPassword: string): Promise<boolean> {
         try {
-            if (await argon2.verify('<big long hash>', plainPassword)) {
+            if (await argon2.verify(checkPassword, plainPassword)) {
                 // password match
                 return true;
             } else {
-                throw new Error("Password is't correct");
+                return false;
             }
         } catch (err) {
-            // internal failure
+            console.error('Error verifying password:', err);
+            // Return false or rethrow the error, depending on your application's requirements
+            return false;
         }
     }
 
     async create(account: CreateAccountDto): Promise<Account> {
         const encrypted = account;
         encrypted.password = await argon2.hash(encrypted.password);
-        return await this._accountRepository.create(encrypted);
+        return this._accountRepository.create(encrypted);
     }
     async isAccount(accountData: Partial<Account>): Promise<boolean> {
         if (!accountData.email && !accountData.phone) {
@@ -39,7 +42,8 @@ export class AccountService {
         }
         return false;
     }
+
     async getAccounts(): Promise<Account[]> {
-        return await this._accountRepository.getAccounts();
+        return this._accountRepository.getAccounts();
     }
 }

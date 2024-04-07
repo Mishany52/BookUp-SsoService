@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Account } from 'src/Infrastructure/types/account';
+import { Account } from 'src/infrastructure/types/account';
 
 @Injectable()
 export class GetAccountDto {
