@@ -1,13 +1,13 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountService } from '../../../domains/account/account.service';
 import { Account } from 'src/infrastructure/types/account';
 import { AccountRole } from 'src/domains/account/enums/account-role';
 import { GetAccountDto } from 'src/domains/account/dtos/get-account.dto';
-import { AuthenticatedGuard } from 'src/guards/session-authenticated.guard';
 import { reqAccount } from 'src/infrastructure/decorators/req-account.decorator';
 import { PayloadDto } from 'src/domains/token/dto/payloadDto';
 import { JwtAuthGuard } from '../../../guards/jwt-authenticated.guard';
+import { UUID } from 'crypto';
 @ApiTags('Accounts')
 @Controller('account')
 export class AccountController {
@@ -33,5 +33,11 @@ export class AccountController {
     @Get('check-jwt')
     helloJwt(@reqAccount() req: PayloadDto): string {
         return 'Hello World ' + req.accountId;
+    }
+
+    @Get(':id')
+    async findOne(@Param('id') id: UUID): Promise<GetAccountDto> {
+        console.log(id);
+        return this._accountService.getAccount(id);
     }
 }
