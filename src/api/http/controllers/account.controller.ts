@@ -35,9 +35,8 @@ export class AccountController {
         return 'Hello World ' + req.accountId;
     }
 
-    @Get(':id')
+    @Get('get-info/:id')
     async findOne(@Param('id') id: UUID): Promise<GetAccountDto> {
-        console.log(id);
         return this._accountService.getAccount(id);
     }
 }
