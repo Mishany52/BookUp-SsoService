@@ -8,7 +8,7 @@ import { IAccountRepository } from '../account/account.repository.interface';
 import { SingInDtoByPhone } from './dtos/sing-in-by-phone.dto';
 import { SingInDtoByEmail } from './dtos/sign-on-by-email.dto';
 import { PayloadDto } from '../token/dto/payload.dto';
-import { JwtSign } from '../token/dto/jwt-sign.dto';
+import { JwtSignDto } from '../token/dto/jwt-sign.dto';
 import {
     INVALID_SIGN_IN_DATA,
     ACCOUNT_ALREADY_CREATED,
@@ -39,7 +39,7 @@ export class AuthService {
         return accountDto;
     }
 
-    public async signIn(singInDto: SingInDtoByEmail | SingInDtoByPhone): Promise<JwtSign> {
+    public async signIn(singInDto: SingInDtoByEmail | SingInDtoByPhone): Promise<JwtSignDto> {
         let account: Account;
         if ('email' in singInDto) {
             account = await this._accountRepository.getByEmail(singInDto.email);
@@ -57,7 +57,7 @@ export class AuthService {
         await this._tokenService.saveToken(tokens.refreshToken);
         return { ...tokens };
     }
-    public jwtSing(payload: PayloadDto): JwtSign {
+    public jwtSing(payload: PayloadDto): JwtSignDto {
         return this._tokenService.generateTokens(payload);
     }
     public async validateAccount(accountEmail: string, password: string): Promise<Account | null> {
@@ -78,7 +78,7 @@ export class AuthService {
         }
     }
 
-    public async refresh(refreshToken: string): Promise<JwtSign> {
+    public async refresh(refreshToken: string): Promise<JwtSignDto> {
         const payload = this._tokenService.getPayload(refreshToken);
         const isAvailable = this._tokenService.validateRefreshToken(payload, refreshToken);
         if (!isAvailable) {
