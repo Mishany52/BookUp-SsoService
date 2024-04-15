@@ -4,9 +4,8 @@ import { AccountService } from '../../../domains/account/account.service';
 import { Account } from 'src/infrastructure/types/account';
 import { AccountRole } from 'src/domains/account/enums/account-role';
 import { GetAccountDto } from 'src/domains/account/dtos/get-account.dto';
-import { AuthenticatedGuard } from 'src/guards/session-authenticated.guard';
 import { reqAccount } from 'src/infrastructure/decorators/req-account.decorator';
-import { PayloadDto } from 'src/domains/token/dto/payloadDto';
+import { PayloadDto } from 'src/domains/token/dto/payload.dto';
 import { JwtAuthGuard } from '../../../guards/jwt-authenticated.guard';
 @ApiTags('Accounts')
 @Controller('account')
@@ -24,11 +23,7 @@ export class AccountController {
             return new GetAccountDto(account);
         });
     }
-    // @UseGuards(AuthenticatedGuard)
-    @Get('check-session')
-    helloSession(@reqAccount() req: PayloadDto): string {
-        return 'Hello World ' + req.accountId;
-    }
+
     @UseGuards(JwtAuthGuard)
     @Get('check-jwt')
     helloJwt(@reqAccount() req: PayloadDto): string {

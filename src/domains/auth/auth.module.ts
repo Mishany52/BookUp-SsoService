@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AccountModule } from '../account/account.module';
 import { AuthController } from 'src/api/http/controllers/auth.controller';
-// import { AccountService } from '../account/account.service';
 import { AuthService } from './auth.service';
 import { AccountRepositoryModule } from 'src/infrastructure/repository/account/account-repository.module';
 import { TokensModule } from '../token/token.module';
 import { TokenRepositoryModule } from 'src/infrastructure/repository/token/token-repository.module';
-// import { TokensService } from '../token/token.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtVerifyStrategy } from './strategies/jwt-refresh.strategy';

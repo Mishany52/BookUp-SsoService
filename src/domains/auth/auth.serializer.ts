@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { PayloadDto } from '../token/dto/payloadDto';
+import { PayloadDto } from '../token/dto/payload.dto';
 
 @Injectable()
 export class AuthSerializer extends PassportSerializer {

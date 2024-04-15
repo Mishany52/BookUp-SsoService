@@ -1,5 +1,5 @@
 import { IsJWT } from 'class-validator';
-export class JwtSign {
+export class JwtSignDto {
     @IsJWT()
     readonly refreshToken: string;
     @IsJWT()

@@ -7,8 +7,16 @@ import { Account } from 'src/infrastructure/types/account';
 import { IAccountRepository } from '../account/account.repository.interface';
 import { SingInDtoByPhone } from './dtos/sing-in-by-phone.dto';
 import { SingInDtoByEmail } from './dtos/sign-on-by-email.dto';
-import { PayloadDto } from '../token/dto/payloadDto';
-import { JwtSign } from '../token/dto/tokensDto';
+import { PayloadDto } from '../token/dto/payload.dto';
+import { JwtSign } from '../token/dto/jwt-sign.dto';
+import {
+    INVALID_SIGN_IN_DATA,
+    ACCOUNT_ALREADY_CREATED,
+    EMAIL_OR_PHONE_REQUIRED,
+    ACCOUNT_CREATION_FAILED,
+    ACCOUNT_NOT_FOUND,
+    REFRESH_FAILED,
+} from 'src/infrastructure/constants/http-messages/errors';
 const accountRepo = () => Inject('accountRepo');
 @Injectable()
 export class AuthService {
@@ -21,11 +29,11 @@ export class AuthService {
     public async singUp(singUpDto: SignUpDto): Promise<GetAccountDto> {
         const isAccount = await this._accountService.isAccount(singUpDto);
         if (isAccount) {
-            throw new HttpException('The account has already been created', HttpStatus.CONFLICT);
+            throw new HttpException(ACCOUNT_ALREADY_CREATED, HttpStatus.CONFLICT);
         }
         const newAccount = await this._accountService.create(singUpDto);
         if (!newAccount) {
-            throw new HttpException("The account didn't create", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(ACCOUNT_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         const accountDto = new GetAccountDto(newAccount);
         return accountDto;
@@ -38,10 +46,11 @@ export class AuthService {
         } else if ('phone' in singInDto) {
             account = await this._accountRepository.getByPhone(singInDto.phone);
         } else {
-            throw new HttpException('Invalid sing-in data', HttpStatus.BAD_REQUEST);
+            throw new HttpException(INVALID_SIGN_IN_DATA, HttpStatus.BAD_REQUEST);
         }
+
         if (!account) {
-            throw new HttpException("The account didn't create", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(INVALID_SIGN_IN_DATA, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         const payload = new PayloadDto(account);
         const tokens = this._tokenService.generateTokens(payload);
@@ -53,13 +62,13 @@ export class AuthService {
     }
     public async validateAccount(accountEmail: string, password: string): Promise<Account | null> {
         if (!accountEmail) {
-            throw new Error('Email or phone must be provided.');
+            throw new Error(EMAIL_OR_PHONE_REQUIRED);
         }
         let account: Account | null = null;
 
         account = await this._accountRepository.getByEmail(accountEmail);
         if (!account) {
-            throw new HttpException('Account not found.', HttpStatus.NOT_FOUND);
+            throw new HttpException(ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
         if (account && (await this._accountService.checkPassword(password, account.password))) {
@@ -73,7 +82,7 @@ export class AuthService {
         const payload = this._tokenService.getPayload(refreshToken);
         const isAvailable = this._tokenService.validateRefreshToken(payload, refreshToken);
         if (!isAvailable) {
-            throw new HttpException('Refresh is bad', HttpStatus.UNAUTHORIZED);
+            throw new HttpException(REFRESH_FAILED, HttpStatus.UNAUTHORIZED);
         }
         const newTokens = this._tokenService.generateTokens(payload);
         return newTokens;
@@ -83,5 +92,9 @@ export class AuthService {
         const payload = this._tokenService.getPayload(refreshToken);
         this._tokenService.deleteToken(refreshToken);
         return payload;
+    }
+
+    public async getExpiresDate(expireTime: number): Promise<Date> {
+        return new Date(Date.now() + expireTime);
     }
 }

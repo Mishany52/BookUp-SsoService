@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ITokenRepository } from './token.repository.interface';
 import { JwtService } from '@nestjs/jwt';
 import { Token } from 'src/infrastructure/types/token';
-import { JwtSign } from './dto/tokensDto';
-import { PayloadDto } from './dto/payloadDto';
+import { JwtSignDto } from './dto/jwt-sign.dto';
+import { PayloadDto } from './dto/payload.dto';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './dto/jwtPayload';
+import { JwtPayload } from '../../infrastructure/types/jwt-payload';
 
 const tokenRepo = () => Inject('tokenRepo');
 @Injectable()
@@ -27,7 +27,7 @@ export class TokensService {
         return await this._tokenRepository.deleteToken({ refreshToken: tokenRefresh });
     }
 
-    public generateTokens(payloadDto: PayloadDto): JwtSign {
+    public generateTokens(payloadDto: PayloadDto): JwtSignDto {
         const payload: JwtPayload = { sub: payloadDto.accountId, role: payloadDto.role };
 
         const tokenRef = this._getRefreshToken(payload.sub);
@@ -49,14 +49,10 @@ export class TokensService {
 
         const payload = this._jwtService.decode<{ sub: string }>(refreshToken);
         if (payload.sub != data.accountId) {
-            // throw new BadRequestException(
-            //     "Payload from access isn't the same as in payload from refresh",
-            // );
             return false;
         }
         const isToken = await this._tokenRepository.findToken(refreshToken);
         if (!isToken) {
-            // throw new BadRequestException("Refresh token doesn't exist in db");
             return false;
         }
         return true;
@@ -83,13 +79,4 @@ export class TokensService {
             },
         );
     }
-    // private _getAccessToken(data: JwtPayload): string {
-    //     return this._jwtService.sign(
-    //         { data },
-    //         {
-    //             secret: this._config.get('jwtAccessSecret'),
-    //             expiresIn: this._config.get('jwtAccessExpires'),
-    //         },
-    //     );
-    // }
 }
