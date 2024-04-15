@@ -65,10 +65,6 @@ export class AccountRepository implements IAccountRepository {
         }
     }
     async getAccounts(): Promise<Account[]> {
-        //!Когда сессию сделаю будем возвращать только активных пользователей
-        // return await this._accountRepository.find({
-        //     relations: ['sessions'],
-        // });
         return await this._accountRepository.find({});
     }
 }

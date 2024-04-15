@@ -1,6 +1,6 @@
 import { AccountRole } from 'src/domains/account/enums/account-role';
 
-export interface JwtPayload {
+export type JwtPayload = {
     sub: string;
     role: AccountRole;
-}
+};

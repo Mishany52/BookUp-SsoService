@@ -1,7 +1,6 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Account } from '../../infrastructure/types/account';
 
-// import { Repository } from 'typeorm';
 import { IAccountRepository } from './account.repository.interface';
 import * as argon2 from 'argon2';
 import { CreateAccountDto } from './dtos/create-account.dto';
@@ -23,8 +22,6 @@ export class AccountService {
                 return false;
             }
         } catch (err) {
-            console.error('Error verifying password:', err);
-            // Return false or rethrow the error, depending on your application's requirements
             return false;
         }
     }
