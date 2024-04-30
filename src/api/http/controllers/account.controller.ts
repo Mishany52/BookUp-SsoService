@@ -41,10 +41,6 @@ export class AccountController {
         return 'Hello World ' + req.accountId;
     }
 
-    @Get(':id')
-    async findOne(@Param('id', ParseUUIDPipe) id: UUID): Promise<GetAccountDto> {
-        return this._accountService.getAccount(id);
-    }
 
     @Put('update/:id')
     async update(
@@ -52,5 +48,10 @@ export class AccountController {
         @Body(ValidationPipe) accountUpdateDto: AccountUpdateDto,
     ): Promise<GetAccountDto> {
         return this._accountService.updateAccount(id, accountUpdateDto);
+    }
+
+    @Get('get-info/:id')
+    async findOne(@Param('id', ParseUUIDPipe) id: UUID): Promise<GetAccountDto> {
+        return this._accountService.getAccount(id);
     }
 }
