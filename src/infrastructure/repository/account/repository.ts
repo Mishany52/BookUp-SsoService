@@ -24,6 +24,15 @@ export class AccountRepository implements IAccountRepository {
             throw new Error("Account doesn't create");
         }
     }
+    async save(accountUpdate: Account): Promise<Account> {
+        try {
+            const account = await this._accountRepository.save(accountUpdate);
+            return account;
+        } catch (error) {
+            throw new Error("Account doesn't update");
+            console.log(error);
+        }
+    }
     async getByEmailAndPhone(accountData: Partial<Account>): Promise<Account | undefined> {
         try {
             const account = await this._accountRepository.findOne({
