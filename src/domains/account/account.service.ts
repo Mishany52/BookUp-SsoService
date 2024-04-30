@@ -1,9 +1,12 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Account } from '../../infrastructure/types/account';
 
 import { IAccountRepository } from './account.repository.interface';
 import * as argon2 from 'argon2';
 import { CreateAccountDto } from './dtos/create-account.dto';
+import { UUID } from 'crypto';
+import { GetAccountDto } from './dtos/get-account.dto';
+import { ACCOUNT_NOT_FOUND } from 'src/infrastructure/constants/http-messages/errors';
 
 const accountRepo = () => Inject('accountRepo');
 
@@ -39,7 +42,13 @@ export class AccountService {
         }
         return false;
     }
-
+    async getAccount(accountId: UUID): Promise<GetAccountDto> {
+        const account = await this._accountRepository.getById(accountId);
+        if (!account) {
+            throw new HttpException(ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        return new GetAccountDto(account);
+    }
     async getAccounts(): Promise<Account[]> {
         return this._accountRepository.getAccounts();
     }
