@@ -1,5 +1,5 @@
 stages:
-  - build-dev
+  # - build-dev
   - test
   - lint
   - build
@@ -17,6 +17,18 @@ variables:
         kubectl create secret docker-registry regcred --docker-server="https://${CI_REGISTRY}" \
         --docker-username=${CI_DEPLOY_USER} --docker-password=${CI_DEPLOY_PASSWORD} -n ${NS};
       fi
+
+.yarn_cache_tpl:
+  before_script:
+    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
+    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
+    - yarn install --frozen-lockfile --no-progress
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn-cache/
 
 .kaniko-build:
   variables:
@@ -95,37 +107,36 @@ variables:
     # custom build context without an explicit Dockerfile path
     - if: $KANIKO_BUILD_CONTEXT != $CI_PROJECT_DIR
 
-kaniko-build-dev:
-  stage: build-dev
-  extends: .kaniko-build
-  variables:
-    DOCKERFILE_PATH: "docker/Dockerfile.Dev"
-    BUILD_TYPE: "develop"
-  tags:
-    - local-k8s
+# kaniko-build-dev:
+#   stage: build-dev
+#   extends: .kaniko-build
+#   variables:
+#     DOCKERFILE_PATH: "docker/Dockerfile.Dev"
+#     BUILD_TYPE: "develop"
+#   tags:
+#     - local-k8s
 
 unit-test-job: # This job runs in the test stage.
+  image:
+    name: node:latest
   stage: test # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests... This will take about 60 seconds."
     - sleep 60
     - echo "Code coverage is 90%"
+  extends: .yarn_cache_tpl
   tags:
     - local-k8s
 
 lint-test-job: # This job also runs in the test stage.
   image:
-    name: registry.gitlab.com/book-up/backend/sso:branch-addcicdpipeline-25e19d7f-1275994702-dev
-    entrypoint: [""]
+    name: node:latest
   stage: test # It can run at the same time as unit-test-job (in parallel).
   script:
     - echo "Linting code... This will take about 10 seconds."
-    - cd /app
-    - ls -lah
-    - ls node_modules
-    - yarn list
     - yarn run lint
     - echo "No lint issues found."
+  extends: .yarn_cache_tpl
   tags:
     - local-k8s
 
