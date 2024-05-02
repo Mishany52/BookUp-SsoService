@@ -21,7 +21,7 @@ variables:
 
 yarn_cache_tpl:
   stage: deps
-  before_script:
+  script:
     - yarn install --frozen-lockfile --no-progress
   cache:
     key:
