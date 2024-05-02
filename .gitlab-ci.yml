@@ -9,6 +9,15 @@ variables:
   PROD_BRANCH: "main"
   DEV_BRANCH: "develop"
 
+.before_tpl:
+  before_script:
+    - |
+      if [ ! $(kubectl get ns ${NS} -o name) ]; then
+        kubectl create ns ${NS};
+        kubectl create secret docker-registry regcred --docker-server="https://${CI_REGISTRY}" \
+        --docker-username=${CI_DEPLOY_USER} --docker-password=${CI_DEPLOY_PASSWORD} -n ${NS};
+      fi
+
 .kaniko-build:
   variables:
     # Additional options for Kaniko executor.
@@ -101,16 +110,21 @@ unit-test-job: # This job runs in the test stage.
     - echo "Running unit tests... This will take about 60 seconds."
     - sleep 60
     - echo "Code coverage is 90%"
+  extends: .before_tpl
   tags:
     - local-k8s
 
 lint-test-job: # This job also runs in the test stage.
+  image:
+    name: IMAGE_TAG
   stage: test # It can run at the same time as unit-test-job (in parallel).
   script:
     - echo "Linting code... This will take about 10 seconds."
-    # - yarn run lint
+    - echo "$IMAGE_TAG"
+    - yarn run lint
     - sleep 60
     - echo "No lint issues found."
+  extends: .before_tpl
   tags:
     - local-k8s
 
