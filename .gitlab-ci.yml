@@ -29,6 +29,8 @@ yarn_cache_tpl:
         - yarn.lock
     paths:
       - node_modules/
+  tags:
+    - local-k8s
 
 .kaniko-build:
   variables:
