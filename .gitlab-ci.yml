@@ -91,6 +91,7 @@ kaniko-build-dev:
   extends: .kaniko-build
   variables:
     DOCKERFILE_PATH: "docker/Dockerfile.Dev"
+    BUILD_TYPE: "develop"
   tags:
     - local-k8s
 
