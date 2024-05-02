@@ -121,6 +121,7 @@ lint-test-job: # This job also runs in the test stage.
   script:
     - echo "Linting code... This will take about 10 seconds."
     - ls -lah
+    - ls / -lah
     - ls node_modules
     - yarn list
     - yarn run lint
