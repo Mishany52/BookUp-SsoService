@@ -20,6 +20,8 @@ variables:
       fi
 
 yarn_cache_tpl:
+  image:
+    name: node:latest
   stage: deps
   script:
     - yarn install --frozen-lockfile --no-progress
