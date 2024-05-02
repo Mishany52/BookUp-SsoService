@@ -106,13 +106,10 @@ kaniko-build-dev:
 
 unit-test-job: # This job runs in the test stage.
   stage: test # It only starts when the job in the build stage completes successfully.
-  variables:
-    NS: sso-test
   script:
     - echo "Running unit tests... This will take about 60 seconds."
     - sleep 60
     - echo "Code coverage is 90%"
-  extends: .before_tpl
   tags:
     - local-k8s
 
@@ -120,14 +117,11 @@ lint-test-job: # This job also runs in the test stage.
   image:
     name: registry.gitlab.com/book-up/backend/sso:branch-addcicdpipeline-25e19d7f-1275994702-dev
   stage: test # It can run at the same time as unit-test-job (in parallel).
-  variables:
-    NS: sso-test
   script:
     - echo "Linting code... This will take about 10 seconds."
     - yarn run lint
     - sleep 60
     - echo "No lint issues found."
-  extends: .before_tpl
   tags:
     - local-k8s
 
