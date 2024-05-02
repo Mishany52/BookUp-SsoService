@@ -116,6 +116,7 @@ unit-test-job: # This job runs in the test stage.
 lint-test-job: # This job also runs in the test stage.
   image:
     name: registry.gitlab.com/book-up/backend/sso:branch-addcicdpipeline-25e19d7f-1275994702-dev
+    entrypoint: [""]
   stage: test # It can run at the same time as unit-test-job (in parallel).
   script:
     - echo "Linting code... This will take about 10 seconds."
