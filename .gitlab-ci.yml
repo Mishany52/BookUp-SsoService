@@ -1,5 +1,6 @@
 stages:
   # - build-dev
+  - deps
   - test
   - lint
   - build
@@ -18,17 +19,16 @@ variables:
         --docker-username=${CI_DEPLOY_USER} --docker-password=${CI_DEPLOY_PASSWORD} -n ${NS};
       fi
 
-.yarn_cache_tpl:
+yarn_cache_tpl:
+  stage: deps
   before_script:
-    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
-    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
     - yarn install --frozen-lockfile --no-progress
   cache:
     key:
       files:
         - yarn.lock
     paths:
-      - .yarn-cache/
+      - node_modules/
 
 .kaniko-build:
   variables:
@@ -125,7 +125,12 @@ unit-test-job: # This job runs in the test stage.
     - sleep 60
     - yarn run test --ci
     - echo "Code coverage is 90%"
-  extends: .yarn_cache_tpl
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - node_modules/
   tags:
     - local-k8s
 
@@ -137,7 +142,12 @@ lint-test-job: # This job also runs in the test stage.
     - echo "Linting code... This will take about 10 seconds."
     - yarn run lint
     - echo "No lint issues found."
-  extends: .yarn_cache_tpl
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - node_modules/
   tags:
     - local-k8s
 
