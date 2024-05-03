@@ -1,6 +1,5 @@
 stages:
   # - build-dev
-  - deps
   - test
   - lint
   - build
@@ -10,29 +9,26 @@ variables:
   PROD_BRANCH: "main"
   DEV_BRANCH: "develop"
 
-.before_tpl:
-  before_script:
-    - |
-      if [ ! $(kubectl get ns ${NS} -o name) ]; then
-        kubectl create ns ${NS};
-        kubectl create secret docker-registry regcred --docker-server="https://${CI_REGISTRY}" \
-        --docker-username=${CI_DEPLOY_USER} --docker-password=${CI_DEPLOY_PASSWORD} -n ${NS};
-      fi
+# .before_tpl:
+#   before_script:
+#     - |
+#       if [ ! $(kubectl get ns ${NS} -o name) ]; then
+#         kubectl create ns ${NS};
+#         kubectl create secret docker-registry regcred --docker-server="https://${CI_REGISTRY}" \
+#         --docker-username=${CI_DEPLOY_USER} --docker-password=${CI_DEPLOY_PASSWORD} -n ${NS};
+#       fi
 
-yarn_cache_tpl:
-  image:
-    name: node:latest
-  stage: deps
-  script:
+.yarn_cache_tpl:
+  before_script:
+    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
+    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
     - yarn install --frozen-lockfile --no-progress
   cache:
     key:
       files:
         - yarn.lock
     paths:
-      - node_modules/
-  tags:
-    - local-k8s
+      - .yarn-cache/
 
 .kaniko-build:
   variables:
@@ -128,13 +124,7 @@ unit-test-job: # This job runs in the test stage.
     - echo "Running unit tests... This will take about 60 seconds."
     - sleep 60
     - yarn run test --ci
-    - echo "Code coverage is 90%"
-  cache:
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - node_modules/
+  extends: .yarn_cache_tpl
   tags:
     - local-k8s
 
@@ -146,12 +136,7 @@ lint-test-job: # This job also runs in the test stage.
     - echo "Linting code... This will take about 10 seconds."
     - yarn run lint
     - echo "No lint issues found."
-  cache:
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - node_modules/
+  extends: .yarn_cache_tpl
   tags:
     - local-k8s
 
