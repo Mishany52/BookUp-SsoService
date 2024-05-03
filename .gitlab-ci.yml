@@ -20,17 +20,17 @@ variables:
 
 .yarn_cache_tpl:
   before_script:
-    # - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
-    # - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
-    # - ls -lah
-    # - cat .yarnrc
+    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
+    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
+    - ls -lah
+    - cat .yarnrc
     - yarn install --frozen-lockfile --no-progress
-  # cache:
-  #   key:
-  #     files:
-  #       - yarn.lock
-  #   paths:
-  #     - .yarn-cache/
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn-cache/
 
 .kaniko-build:
   variables:
@@ -123,7 +123,6 @@ unit-test-job: # This job runs in the test stage.
     name: node:latest
   stage: test # It only starts when the job in the build stage completes successfully.
   script:
-    - echo "Running unit tests... This will take about 60 seconds."
     - yarn run test --ci
   extends: .yarn_cache_tpl
   tags:
@@ -135,6 +134,7 @@ lint-test-job: # This job also runs in the test stage.
   stage: test # It can run at the same time as unit-test-job (in parallel).
   script:
     - echo "Linting code... This will take about 10 seconds."
+    - ls .yarn-cache
     - yarn run lint
     - echo "No lint issues found."
   extends: .yarn_cache_tpl
