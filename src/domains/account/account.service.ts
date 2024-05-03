@@ -28,8 +28,8 @@ export class AccountService {
     }
 
     async create(account: CreateAccountDto): Promise<Account> {
-        const encrypted = account;
-        encrypted.password = await argon2.hash(encrypted.password);
+        const hashPassword = await argon2.hash(account.password);
+        const encrypted = Object.assign({}, { password: hashPassword });
         return this._accountRepository.create(encrypted);
     }
     async isAccount(accountData: Partial<Account>): Promise<boolean> {

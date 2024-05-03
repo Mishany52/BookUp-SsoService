@@ -22,7 +22,7 @@ export class AccountEntity {
         type: 'text',
         nullable: true,
     })
-    imgUlr: string;
+    imgUrl: string;
 
     @Column({
         type: 'enum',
