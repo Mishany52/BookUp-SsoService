@@ -20,17 +20,17 @@ variables:
 
 .yarn_cache_tpl:
   before_script:
-    - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
-    - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
-    - ls
-    - cat .yarnrc
+    # - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
+    # - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
+    # - ls -lah
+    # - cat .yarnrc
     - yarn install --frozen-lockfile --no-progress
-  cache:
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - .yarn-cache/
+  # cache:
+  #   key:
+  #     files:
+  #       - yarn.lock
+  #   paths:
+  #     - .yarn-cache/
 
 .kaniko-build:
   variables:
