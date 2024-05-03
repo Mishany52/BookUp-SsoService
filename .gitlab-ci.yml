@@ -123,10 +123,16 @@ unit-test-job: # This job runs in the test stage.
     name: node:latest
   stage: test # It only starts when the job in the build stage completes successfully.
   script:
-    - yarn run test --ci
+    - yarn run test --ci --reporters="jest-junit" || ls -lah
   extends: .yarn_cache_tpl
   tags:
     - local-k8s
+  # artifacts:
+  #   untracked: false
+  #   when: always
+  #   expire_in: "30 days"
+  #   reports:
+  #     j
 
 lint-test-job: # This job also runs in the test stage.
   image:
@@ -134,7 +140,6 @@ lint-test-job: # This job also runs in the test stage.
   stage: test # It can run at the same time as unit-test-job (in parallel).
   script:
     - echo "Linting code... This will take about 10 seconds."
-    - ls .yarn-cache
     - yarn run lint
     - echo "No lint issues found."
   extends: .yarn_cache_tpl
