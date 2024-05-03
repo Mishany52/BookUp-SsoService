@@ -8,6 +8,7 @@ COPY ./test ./test
 COPY nest-cli.json tsconfig.build.json tsconfig.json .eslintrc.js ./
 
 RUN apk add --no-cache tini
+ENV NODE_PATH=/app/node_modules
 
 ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "yarn", "start", "dev" ]
