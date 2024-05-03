@@ -41,7 +41,6 @@ export class AccountController {
         return 'Hello World ' + req.accountId;
     }
 
-
     @Put('update/:id')
     async update(
         @Param('id', ParseUUIDPipe) id: UUID,
