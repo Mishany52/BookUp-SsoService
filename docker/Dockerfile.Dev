@@ -1,0 +1,15 @@
+FROM node:lts-alpine3.19
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY ./src ./src
+COPY ./test ./test
+COPY nest-cli.json tsconfig.build.json tsconfig.json .eslintrc.js ./
+
+RUN apk add --no-cache tini
+ENV NODE_PATH=/app/node_modules
+
+ENTRYPOINT [ "/sbin/tini", "--" ]
+CMD [ "yarn", "start", "dev" ]
+
