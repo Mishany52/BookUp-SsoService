@@ -95,8 +95,8 @@
             "ts"
         ],
         "roots": [
-            "<rootDir>",
-            "./"
+            "<rootDir>/src/",
+            "<rootDir>/test/"
         ],
         "modulePaths": [
             "<rootDir>",
@@ -112,7 +112,17 @@
         "collectCoverageFrom": [
             "**/*.(t|j)s"
         ],
+        "coveragePathIgnorePatterns": [
+          "<rootDir>/test/",
+          "<rootDir>/node_modules/"
+        ],
         "coverageDirectory": "../coverage",
+        "coverageReporters": [
+          "json",
+          "lcov",
+          "text",
+          "cobertura"
+        ],
         "testEnvironment": "node",
         "reporters": [
             "default",
