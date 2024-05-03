@@ -123,7 +123,7 @@ unit-test-job: # This job runs in the test stage.
     name: node:latest
   stage: test # It only starts when the job in the build stage completes successfully.
   script:
-    - yarn run test --ci
+    - yarn run test:e2e --ci
   extends: .yarn_cache_tpl
   tags:
     - local-k8s
