@@ -22,6 +22,8 @@ variables:
   before_script:
     - echo 'yarn-offline-mirror ".yarn-cache/"' >> .yarnrc
     - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
+    - ls
+    - cat .yarnrc
     - yarn install --frozen-lockfile --no-progress
   cache:
     key:
