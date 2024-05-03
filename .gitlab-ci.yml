@@ -24,7 +24,7 @@ variables:
     - echo 'yarn-offline-mirror-pruning true' >> .yarnrc
     - ls -lah
     - cat .yarnrc
-    - yarn install --frozen-lockfile --no-progress --offline
+    - yarn install --frozen-lockfile --no-progress
   cache:
     key:
       files:
