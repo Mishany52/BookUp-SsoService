@@ -88,4 +88,4 @@ lint-test-job:
       - reports/eslint-junit-report.xml
     reports:
       codequality: gl-codequality.json
-      junit: reports/eslint-junit-report.xml
+      # junit: reports/eslint-junit-report.xml
