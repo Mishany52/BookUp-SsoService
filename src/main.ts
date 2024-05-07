@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SSOLogger } from './infrastructure/logger/logger';
@@ -9,7 +10,7 @@ async function bootstrap() {
     const logger = new SSOLogger();
     const app = await NestFactory.create(AppModule);
     app.use(cookieParser());
-
+    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
     const config = new DocumentBuilder()
         .setTitle('Parts Lib')
         .setDescription('The Parts library')
