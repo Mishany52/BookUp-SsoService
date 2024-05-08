@@ -8,3 +8,13 @@ services:
       POSTGRES_PASSWORD: "test_password"
     ports:
       - "5432:5432"
+
+  sso:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.Prod
+    volumes:
+      - .env.production.local:/app/dist/.env
+    command: ["/bin/sh", "-c", "sleep infinity"]
+    ports:
+      - 5000:5000
