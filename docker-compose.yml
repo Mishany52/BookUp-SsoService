@@ -13,8 +13,10 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.Prod
+    environment:
+      NODE_ENV: development
     volumes:
-      - .env.production.local:/app/dist/.env
+      - .env.production.local:/app/.env
     command: ["/bin/sh", "-c", "sleep infinity"]
     ports:
       - 5000:5000
