@@ -41,6 +41,7 @@
         "@types/uuid": "^9.0.8",
         "@typescript-eslint/eslint-plugin": "^7.1.0",
         "@typescript-eslint/parser": "^7.1.0",
+        "argon2": "^0.40.1",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
         "compression": "^1.7.4",
@@ -66,7 +67,6 @@
         "@types/node": "^20.3.1",
         "@types/passport-local": "^1.0.38",
         "@types/supertest": "^6.0.0",
-        "argon2": "^0.40.1",
         "eslint": "^8.42.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-formatter-gitlab": "^5.1.0",
@@ -113,15 +113,15 @@
             "**/*.(t|j)s"
         ],
         "coveragePathIgnorePatterns": [
-          "<rootDir>/test/",
-          "<rootDir>/node_modules/"
+            "<rootDir>/test/",
+            "<rootDir>/node_modules/"
         ],
         "coverageDirectory": "../coverage",
         "coverageReporters": [
-          "json",
-          "lcov",
-          "text",
-          "cobertura"
+            "json",
+            "lcov",
+            "text",
+            "cobertura"
         ],
         "testEnvironment": "node",
         "reporters": [
@@ -140,19 +140,19 @@
         "usePathForSuiteName": "true"
     },
     "eslint-formatter-multiple": {
-      "formatters": [
-      {
-        "name": "stylish",
-        "output": "console"
-      },
-      {
-        "name": "gitlab"
-      },
-      {
-        "name": "junit",
-        "output": "file",
-        "path": "reports/eslint-junit-report.xml"
-      }
-    ]
-  }
+        "formatters": [
+            {
+                "name": "stylish",
+                "output": "console"
+            },
+            {
+                "name": "gitlab"
+            },
+            {
+                "name": "junit",
+                "output": "file",
+                "path": "reports/eslint-junit-report.xml"
+            }
+        ]
+    }
 }
