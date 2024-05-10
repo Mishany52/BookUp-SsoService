@@ -4,6 +4,6 @@ export type Account = {
     email: string;
     password: string;
     phone: string;
-    imgUlr: string;
+    imgUrl: string;
     role: AccountRole;
 };

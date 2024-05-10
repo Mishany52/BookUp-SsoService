@@ -14,8 +14,8 @@ const AppDataSource = new DataSource({
     password: `${process.env.POSTGRES_PASSWORD}`,
     database: `${process.env.POSTGRES_DB}`,
     synchronize: false,
-    migrations: [path.join(__dirname, 'infrastructure', 'postgres', 'migrations', '/*.ts')],
-    entities: [path.join(__dirname, '/../**/*.entity.ts')],
+    migrations: [path.join(__dirname, 'infrastructure', 'postgres', 'migrations', '/*.{ts,js}')],
+    entities: [path.join(__dirname, '/../**/*.entity.{ts,js}')],
 });
 
 AppDataSource.initialize()

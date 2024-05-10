@@ -8,6 +8,7 @@ const util = {
         for (const key of Object.keys(source)) {
             const targetValue = target[key];
             const sourceValue = source[key];
+
             if (this.isObject(targetValue) && this.isObject(sourceValue)) {
                 Object.assign(sourceValue, this.merge(targetValue, sourceValue));
             }

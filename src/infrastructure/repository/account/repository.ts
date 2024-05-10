@@ -5,6 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IAccountRepository } from 'src/domains/account/account.repository.interface';
 import { Repository } from 'typeorm';
 import { CreateAccountDto } from 'src/domains/account/dtos/create-account.dto';
+import {
+    ACCOUNT_CREATION_FAILED,
+    ACCOUNT_NOT_FOUND,
+    ACCOUNT_NOT_FOUND_BY_EMAIL,
+    ACCOUNT_NOT_FOUND_BY_ID,
+    ACCOUNT_NOT_FOUND_BY_PHONE,
+    ACCOUNT_NOT_UPDATE,
+} from 'src/infrastructure/constants/http-messages/errors';
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
@@ -21,7 +29,15 @@ export class AccountRepository implements IAccountRepository {
             const createdUser: Account = { ...account }; // Assuming simple mapping
             return createdUser;
         } catch (error) {
-            throw new Error("Account doesn't create");
+            throw new Error(ACCOUNT_CREATION_FAILED);
+        }
+    }
+    async save(accountUpdate: Account): Promise<Account> {
+        try {
+            const account = await this._accountRepository.save(accountUpdate);
+            return account;
+        } catch (error) {
+            throw new Error(ACCOUNT_NOT_UPDATE);
         }
     }
     async getByEmailAndPhone(accountData: Partial<Account>): Promise<Account | undefined> {
@@ -31,7 +47,7 @@ export class AccountRepository implements IAccountRepository {
             });
             return account;
         } catch (error) {
-            throw new Error('This mistake appeared when to find user by email&phone');
+            throw new Error(ACCOUNT_NOT_FOUND);
         }
     }
     async getById(accountId: string): Promise<Account | undefined> {
@@ -41,7 +57,7 @@ export class AccountRepository implements IAccountRepository {
             });
             return account;
         } catch (error) {
-            throw new Error('Account does not find by id');
+            throw new Error(ACCOUNT_NOT_FOUND_BY_ID);
         }
     }
     async getByEmail(accountEmail: string): Promise<Account | undefined> {
@@ -51,7 +67,7 @@ export class AccountRepository implements IAccountRepository {
             });
             return account;
         } catch (error) {
-            throw new Error('Account does not find by Email');
+            throw new Error(ACCOUNT_NOT_FOUND_BY_EMAIL);
         }
     }
     async getByPhone(accountPhone: string): Promise<Account | undefined> {
@@ -61,7 +77,7 @@ export class AccountRepository implements IAccountRepository {
             });
             return account;
         } catch (error) {
-            throw new Error('Account does not find by Phone');
+            throw new Error(ACCOUNT_NOT_FOUND_BY_PHONE);
         }
     }
     async getAccounts(): Promise<Account[]> {
