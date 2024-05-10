@@ -175,8 +175,7 @@ lint-test-job:
       codequality: gl-codequality.json
       # junit: reports/eslint-junit-report.xml
 
-
-kaniko-build:
+.d_kaniko-build:
   stage: build
   extends: .kaniko-build
   variables:
@@ -184,7 +183,7 @@ kaniko-build:
   tags:
     - local-k8s
 
-deploy-job: # This job runs in the deploy stage.
+.deploy-job: # This job runs in the deploy stage.
   stage: deploy # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
   script:
