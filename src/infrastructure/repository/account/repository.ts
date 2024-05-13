@@ -25,7 +25,7 @@ export class AccountRepository implements IAccountRepository {
     async create(createDto: CreateAccountDto): Promise<Account> {
         const account = this._accountRepository.create(createDto);
         try {
-            this._accountRepository.save(account);
+            await this._accountRepository.save(account);
             //!Потом сменить на mapper
             const createdUser: Account = { ...account }; // Assuming simple mapping
             return createdUser;
