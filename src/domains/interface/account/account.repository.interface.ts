@@ -1,5 +1,5 @@
 import { UUID } from 'crypto';
-import { Account } from '../../../infrastructure/types/account';
+import { Account } from 'src/infrastructure/types/account';
 
 export interface IAccountRepository {
     create(createFields: Partial<Account>): Promise<Account>;
