@@ -3,7 +3,7 @@ import { Account } from 'src/infrastructure/types/account';
 import { AccountEntity } from './account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IAccountRepository } from 'src/domains/account/account.repository.interface';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateAccountDto } from 'src/domains/account/dtos/create-account.dto';
 import {
     ACCOUNT_CREATION_FAILED,
@@ -13,6 +13,7 @@ import {
     ACCOUNT_NOT_FOUND_BY_PHONE,
     ACCOUNT_NOT_UPDATE,
 } from 'src/infrastructure/constants/http-messages/errors';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
@@ -50,7 +51,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND);
         }
     }
-    async getById(accountId: string): Promise<Account | undefined> {
+    async getById(accountId: UUID): Promise<Account | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: { id: accountId },
@@ -80,7 +81,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND_BY_PHONE);
         }
     }
-    async getAccounts(): Promise<Account[]> {
-        return await this._accountRepository.find({});
+    async getAccountsByIds(accountsIds: UUID[]): Promise<Account[]> {
+        return await this._accountRepository.findBy({ id: In([accountsIds]) });
     }
 }

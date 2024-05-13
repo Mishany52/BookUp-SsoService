@@ -6,7 +6,11 @@ import { CreateAccountDto } from './dtos/create-account.dto';
 import { UUID } from 'crypto';
 import { GetAccountDto } from './dtos/get-account.dto';
 import { AccountUpdateDto } from './dtos/update-account.dto';
-import { ACCOUNT_NOT_FOUND } from 'src/infrastructure/constants/http-messages/errors';
+import {
+    ACCOUNTS_NOT_FOUND_BY_IDS,
+    ACCOUNT_NOT_FOUND_BY_ID,
+    ACCOUNT_NOT_UPDATE,
+} from '../../infrastructure/constants/http-messages/errors';
 
 const accountRepo = () => Inject('accountRepo');
 
@@ -27,10 +31,12 @@ export class AccountService {
         }
     }
 
-    async create(account: CreateAccountDto): Promise<Account> {
+    async create(account: CreateAccountDto): Promise<GetAccountDto> {
         const hashPassword = await argon2.hash(account.password);
-        const encrypted = Object.assign({}, { password: hashPassword });
-        return this._accountRepository.create(encrypted);
+        const encrypted: CreateAccountDto = { ...account, password: hashPassword };
+        const newAccount = await this._accountRepository.create(encrypted);
+        const getAccountDto = new GetAccountDto(newAccount);
+        return getAccountDto;
     }
     async isAccount(accountData: Partial<Account>): Promise<boolean> {
         if (!accountData.email && !accountData.phone) {
@@ -42,15 +48,20 @@ export class AccountService {
         }
         return false;
     }
-    async getAccount(accountId: UUID): Promise<GetAccountDto> {
+    async getAccountById(accountId: UUID): Promise<GetAccountDto> {
         const account = await this._accountRepository.getById(accountId);
         if (!account) {
-            throw new HttpException(ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new HttpException(ACCOUNT_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
         return new GetAccountDto(account);
     }
-    async getAccounts(): Promise<Account[]> {
-        return this._accountRepository.getAccounts();
+    async getAccountsByIds(accountIds: UUID[]): Promise<GetAccountDto[]> {
+        const accounts = await this._accountRepository.getAccountsByIds(accountIds);
+        if (!accounts) {
+            throw new HttpException(ACCOUNTS_NOT_FOUND_BY_IDS, HttpStatus.NOT_FOUND);
+        }
+        const accountsDto = accounts.map((account) => new GetAccountDto(account));
+        return accountsDto;
     }
 
     async updateAccount(
@@ -59,7 +70,7 @@ export class AccountService {
     ): Promise<GetAccountDto> {
         const account = await this._accountRepository.getById(accountId);
         if (!account) {
-            throw new HttpException('Account not found', HttpStatus.NOT_FOUND);
+            throw new HttpException(ACCOUNT_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
         if (accountUpdateDto.password.length != 0) {
             accountUpdateDto.password = await argon2.hash(accountUpdateDto.password);
@@ -69,8 +80,8 @@ export class AccountService {
 
         const accountUpdate = await this._accountRepository.save(account);
         if (!accountUpdate) {
-            throw new HttpException('Account update failed successfully', HttpStatus.BAD_REQUEST);
+            throw new HttpException(ACCOUNT_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
-        return new GetAccountDto(accountUpdate);
+        return new GetAccountDto(account);
     }
 }

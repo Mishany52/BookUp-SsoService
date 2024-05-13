@@ -1,3 +1,4 @@
+import { UUID } from 'crypto';
 import { Account } from '../../infrastructure/types/account';
 
 export interface IAccountRepository {
@@ -6,6 +7,6 @@ export interface IAccountRepository {
     getByEmailAndPhone(accountData: Partial<Account>): Promise<Account>;
     getByEmail(email: string): Promise<Account>;
     getByPhone(phone: string): Promise<Account>;
-    getById(accountId: string): Promise<Account>;
-    getAccounts(): Promise<Account[]>;
+    getById(accountId: UUID): Promise<Account>;
+    getAccountsByIds(accountId: UUID[]): Promise<Account[]>;
 }
