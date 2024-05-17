@@ -4,7 +4,7 @@ import { GetAccountDto } from 'src/domains/account/dtos/get-account.dto';
 import { AuthService } from 'src/domains/auth/auth.service';
 import { TokensService } from 'src/domains/token/token.service';
 import { AccountRepository } from 'src/infrastructure/repository/account/repository';
-import { Account } from '../../dist/infrastructure/types/account';
+import { Account } from 'src/infrastructure/types/account';
 import {
     ACCOUNT_ALREADY_CREATED,
     ACCOUNT_CREATION_FAILED,
