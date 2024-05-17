@@ -25,8 +25,8 @@ export class AccountController {
     @ApiOperation({ summary: 'Получение всех пользователей' })
     @ApiResponse({ status: 200 })
     @Get()
-    async getAll() {
-        const accounts = await this._accountService.getAccounts();
+    async getAccounts(@Body() accountUuids: UUID[]) {
+        const accounts = await this._accountService.getAccountsByIds(accountUuids);
         return accounts.map((account: Account) => {
             if (account.role == AccountRole.admin) {
                 return;
@@ -51,6 +51,6 @@ export class AccountController {
 
     @Get('get-info/:id')
     async findOne(@Param('id', ParseUUIDPipe) id: UUID): Promise<GetAccountDto> {
-        return this._accountService.getAccount(id);
+        return this._accountService.getAccountById(id);
     }
 }
