@@ -6,6 +6,9 @@ export class SignUpDto {
     @IsEmail({}, { message: 'Некорректный email' })
     readonly email: string;
 
+    @ApiProperty({ example: 'Иванов Иван Иванович', description: 'ФИО' })
+    @IsString()
+    readonly fio: string;
     @ApiProperty({ example: '+79000000000', description: 'Номер телефона' })
     @IsString({ message: 'Должно быть строкой' })
     @IsPhoneNumber('RU')
