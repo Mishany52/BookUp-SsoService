@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="14" failures="0" errors="0" time="3.924">
+  <testsuite name="test/auth/auth-service.spec.ts" errors="0" failures="0" skipped="0" timestamp="2024-05-13T10:58:22" time="3.834" tests="14">
+    <testcase classname="AuthService-should be defined" name="AuthService-should be defined" time="0.003">
+    </testcase>
+    <testcase classname="AuthService › singUp-successfully signUp =&gt; Should singUp a new account return its data" name="AuthService › singUp-successfully signUp =&gt; Should singUp a new account return its data" time="0.002">
+    </testcase>
+    <testcase classname="AuthService › singUp-unsuccessfully singUp (account already existed) =&gt; Should return an error" name="AuthService › singUp-unsuccessfully singUp (account already existed) =&gt; Should return an error" time="0.011">
+    </testcase>
+    <testcase classname="AuthService › singUp-unsuccessfully singUp (creation of account failed) =&gt; Should return an error" name="AuthService › singUp-unsuccessfully singUp (creation of account failed) =&gt; Should return an error" time="0.001">
+    </testcase>
+    <testcase classname="AuthService › singIn-successfully singIn by Email =&gt; Should create jwtTokens and return them" name="AuthService › singIn-successfully singIn by Email =&gt; Should create jwtTokens and return them" time="0.002">
+    </testcase>
+    <testcase classname="AuthService › singIn-successfully singIn by Phone =&gt; Should create jwtTokens and return them" name="AuthService › singIn-successfully singIn by Phone =&gt; Should create jwtTokens and return them" time="0.001">
+    </testcase>
+    <testcase classname="AuthService › singIn-unsuccessfully singIn (Not found account by phone or email) =&gt; Should create jwtTokens and return them" name="AuthService › singIn-unsuccessfully singIn (Not found account by phone or email) =&gt; Should create jwtTokens and return them" time="0.002">
+    </testcase>
+    <testcase classname="AuthService › validateAccount-successfully validate account =&gt; Should find account by email and check password" name="AuthService › validateAccount-successfully validate account =&gt; Should find account by email and check password" time="0.002">
+    </testcase>
+    <testcase classname="AuthService › validateAccount-unsuccessfully validate account (email is null) =&gt; Should throw an error " name="AuthService › validateAccount-unsuccessfully validate account (email is null) =&gt; Should throw an error " time="0.008">
+    </testcase>
+    <testcase classname="AuthService › validateAccount-unsuccessfully validate account (account not found) =&gt; Should throw an error" name="AuthService › validateAccount-unsuccessfully validate account (account not found) =&gt; Should throw an error" time="0.001">
+    </testcase>
+    <testcase classname="AuthService › validateAccount-unsuccessfully validate account (password is wrong) =&gt; Should throw an error" name="AuthService › validateAccount-unsuccessfully validate account (password is wrong) =&gt; Should throw an error" time="0.001">
+    </testcase>
+    <testcase classname="AuthService › refresh-successfully refresh tokens =&gt; Should return new tokens" name="AuthService › refresh-successfully refresh tokens =&gt; Should return new tokens" time="0.001">
+    </testcase>
+    <testcase classname="AuthService › refresh-unsuccessfully refresh tokens (failed verification) =&gt; Should throw an error" name="AuthService › refresh-unsuccessfully refresh tokens (failed verification) =&gt; Should throw an error" time="0.002">
+    </testcase>
+    <testcase classname="AuthService-logout =&gt; Should return delete refresh token from db and return its payload" name="AuthService-logout =&gt; Should return delete refresh token from db and return its payload" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>
