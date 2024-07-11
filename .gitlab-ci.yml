@@ -40,7 +40,9 @@ variables:
   variables:
     # Additional options for Kaniko executor.
     # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
-    KANIKO_ARGS: "--label ci.branch=${CI_COMMIT_BRANCH} --label ci.commit=${CI_COMMIT_SHA} --cache-copy-layers --cache=true"
+    KANIKO_ARGS: "--label ci.branch=${CI_COMMIT_BRANCH} \
+      --label ci.commit=${CI_COMMIT_SHA} \
+      --cache-copy-layers --cache=true"
     KANIKO_BUILD_CONTEXT: $CI_PROJECT_DIR
   stage: build
   image:
