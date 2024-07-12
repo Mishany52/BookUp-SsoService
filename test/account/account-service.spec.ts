@@ -1,11 +1,11 @@
 import { mockDeep } from 'jest-mock-extended';
 import { AccountService } from 'src/domains/account/account.service';
-import { AccountRepository } from 'src/infrastructure/repository/account/repository';
-import { CreateAccountDto } from 'src/domains/account/dtos/create-account.dto';
+import { AccountRepository } from 'src/infrastructure/repository/account/account.repository';
+import { CreateAccountDto } from 'src/api/http/controllers/dto/account/create-account.dto';
 import { Account } from '../../src/infrastructure/types/account';
 import { UUID, randomUUID } from 'crypto';
 import { AccountRole } from 'src/domains/account/enums/account-role';
-import { GetAccountDto } from 'src/domains/account/dtos/get-account.dto';
+import { GetAccountDto } from 'src/api/http/controllers/dto/account/get-account.dto';
 import {
     ACCOUNT_NOT_FOUND_BY_ID,
     ACCOUNTS_NOT_FOUND_BY_IDS,
@@ -26,6 +26,7 @@ const account: Account = {
     password: 'hashed_password',
     phone: '+79000000000',
     role: AccountRole.client,
+    fio: 'Иванов Иван Иванович',
     imgUrl: null,
 };
 
@@ -33,6 +34,7 @@ const createAccountDto = {
     email: 'hisEmailadress@yandex.com',
     password: 'password',
     phone: '+79000000000',
+    fio: 'Иванов Иван Иванович',
 } as CreateAccountDto;
 
 const expectedGetAccountDto = new GetAccountDto(account);
@@ -42,6 +44,7 @@ const accounts: Account[] = [
         id: expect.stringMatching(
             /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
         ),
+        fio: 'Иванов Иван Иванович',
         email: 'hisEmailadress@yandex.com',
         password: 'hashed_password',
         phone: '+79000000000',
@@ -53,6 +56,7 @@ const accounts: Account[] = [
             /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
         ),
         email: 'myEmailadress@yandex.com',
+        fio: 'Иванов Иван Иванович',
         password: 'hashed_password',
         phone: '+79000000001',
         role: AccountRole.client,
