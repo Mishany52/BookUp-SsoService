@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { AccountService } from '../account/account.service';
 import { SignUpDto } from './dtos/sign-up.dto';
-import { GetAccountDto } from '../account/dtos/get-account.dto';
+import { GetAccountDto } from '../../api/http/controllers/dto/account/get-account.dto';
 import { TokensService } from '../token/token.service';
 import { Account } from 'src/infrastructure/types/account';
-import { IAccountRepository } from '../account/account.repository.interface';
+import { IAccountRepository } from '../interface/account/account.repository.interface';
 import { SingInDtoByPhone } from './dtos/sing-in-by-phone.dto';
 import { SingInDtoByEmail } from './dtos/sign-on-by-email.dto';
 import { PayloadDto } from '../token/dto/payload.dto';

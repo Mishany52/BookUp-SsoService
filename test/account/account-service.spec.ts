@@ -174,4 +174,106 @@ describe('AccountService', () => {
             expect(result).rejects.toThrow(ACCOUNT_NOT_FOUND_BY_ID);
         });
     });
+
+    describe('createAccount', () => {
+        test('successfully create => Should create a new account, hash password and return its data', async () => {
+            mockAccountRep.create.mockImplementationOnce(
+                async (createAccountDto: CreateAccountDto): Promise<Account> => {
+                    return {
+                        ...createAccountDto,
+                        id: randomUUID(),
+                        role: AccountRole.client,
+                        imgUrl: null,
+                    } as Account;
+                },
+            );
+            const result = await service.create(createAccountDto);
+
+            expect(result).toEqual(expectedGetAccountDto);
+            expect(argon2.hash).toHaveBeenCalledWith(createAccountDto.password);
+            expect(mockAccountRep.create).toHaveBeenCalledWith({
+                ...createAccountDto,
+                password: account.password,
+            });
+        });
+    });
+
+    describe('getAccount by id', () => {
+        test('should successfully return a valid account given a valid account uuid', async () => {
+            mockAccountRep.getById.mockImplementationOnce(async (uuid: UUID): Promise<Account> => {
+                return {
+                    ...account,
+                    id: uuid,
+                };
+            });
+            const uuid = randomUUID();
+            const expectedAccount = new GetAccountDto({ ...account, id: uuid });
+            const result = await service.getAccountById(uuid);
+            expect(result).toEqual(expectedAccount);
+        });
+        test('should return an error if account not found', async () => {
+            mockAccountRep.getById.mockResolvedValueOnce(null);
+            const uuid = randomUUID();
+            expect(service.getAccountById(uuid)).rejects.toThrow(ACCOUNT_NOT_FOUND_BY_ID);
+        });
+    });
+
+    describe('getAccounts by ids', () => {
+        test('should successfully return a valid accounts given valid account uuids', async () => {
+            mockAccountRep.getAccountsByIds.mockImplementationOnce(
+                async (uuids: UUID[]): Promise<Account[]> => {
+                    accounts.forEach((account, index) => {
+                        // eslint-disable-next-line security/detect-object-injection
+                        account.id = uuids[index];
+                    });
+                    return accounts;
+                },
+            );
+            const uuids = accounts.map(() => uuidv4() as UUID);
+            const expectedAccounts = accounts.map((account) => new GetAccountDto(account));
+            const result = await service.getAccountsByIds(uuids);
+            expect(result).toEqual(expectedAccounts);
+        });
+        test('should return an error if account not found', async () => {
+            mockAccountRep.getAccountsByIds.mockResolvedValueOnce(null);
+            const uuids = accounts.map(() => uuidv4() as UUID);
+            expect(service.getAccountsByIds(uuids)).rejects.toThrow(ACCOUNTS_NOT_FOUND_BY_IDS);
+        });
+    });
+
+    describe('updateAccount', () => {
+        test('should the password be cached if it is provided with other data, and the account data should be updated', async () => {
+            mockAccountRep.getById.mockImplementationOnce(async (uuid: UUID): Promise<Account> => {
+                return {
+                    ...account,
+                    id: uuid,
+                };
+            });
+            mockAccountRep.save.mockImplementationOnce(
+                async (accountDto: Account): Promise<Account> => {
+                    return accountDto;
+                },
+            );
+            const newAccountData = {
+                email: 'doyouloveyourself@yes.ido',
+                password: 'weWillFinishOurProject',
+            };
+            const uuid = uuidv4() as UUID;
+            const result = await service.updateAccount(uuid, { ...newAccountData });
+            const expectedAccount = new GetAccountDto({ ...account, email: newAccountData.email });
+
+            expect(result).toEqual(expectedAccount);
+            expect(argon2.hash).toHaveBeenCalledWith(newAccountData.password);
+            expect(mockAccountRep.save).toHaveBeenCalledWith(
+                expect.objectContaining({ password: 'hashed_password' }),
+            );
+        });
+
+        test('should throw an HttpException if update fails', async () => {
+            const uuid = randomUUID();
+            mockAccountRep.getById.mockResolvedValueOnce(null);
+            const result = service.updateAccount(uuid, { email: 'newEmail@gmail.com' });
+            expect(result).rejects.toThrow(ACCOUNT_NOT_FOUND_BY_ID);
+        });
+    });
 });
