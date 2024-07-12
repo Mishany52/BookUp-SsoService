@@ -1,4 +1,4 @@
-import { TokenRepository } from './repository';
+import { TokenRepository } from './token.repository';
 import { Provider } from '@nestjs/common';
 
 export const tokenRepoProvider: Provider = {

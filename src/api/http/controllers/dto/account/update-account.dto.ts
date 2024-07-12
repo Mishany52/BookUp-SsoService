@@ -1,7 +1,7 @@
 import { IsEmail, IsEnum, IsPhoneNumber, IsString, IsUrl } from 'class-validator';
-import { AccountRole } from '../enums/account-role';
+import { AccountRole } from '../../../../../domains/account/enums/account-role';
 
-export class AccountDto {
+export class AccountUpdateDto {
     @IsEmail()
     email: string;
     @IsPhoneNumber('RU')
