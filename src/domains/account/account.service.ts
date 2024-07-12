@@ -1,11 +1,11 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Account } from '../../infrastructure/types/account';
-import { IAccountRepository } from './account.repository.interface';
+import { IAccountRepository } from '../interface/account/account.repository.interface';
 import * as argon2 from 'argon2';
-import { CreateAccountDto } from './dtos/create-account.dto';
+import { CreateAccountDto } from '../../api/http/controllers/dto/account/create-account.dto';
 import { UUID } from 'crypto';
-import { GetAccountDto } from './dtos/get-account.dto';
-import { AccountUpdateDto } from './dtos/update-account.dto';
+import { GetAccountDto } from '../../api/http/controllers/dto/account/get-account.dto';
+import { AccountUpdateDto } from '../../api/http/controllers/dto/account/update-account.dto';
 import {
     ACCOUNTS_NOT_FOUND_BY_IDS,
     ACCOUNT_NOT_FOUND_BY_ID,

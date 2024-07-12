@@ -1,9 +1,10 @@
 import { Exclude } from 'class-transformer';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { AccountRole } from '../../../domains/account/enums/account-role';
-
+import { IAccount } from 'src/domains/interface/account/account.interface';
+import { MinLength } from 'class-validator';
 @Entity({ name: 'accounts' })
-export class AccountEntity {
+export class AccountEntity implements IAccount {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -14,8 +15,12 @@ export class AccountEntity {
     @Exclude()
     password: string;
 
-    @Column({ type: 'varchar', length: 18, unique: true, nullable: false })
+    @Column({ type: 'varchar', length: 16, unique: true, nullable: false })
+    @MinLength(8)
     phone: string;
+
+    @Column({ type: 'varchar', nullable: false })
+    fio: string;
 
     //? Какой тип должен быть у ссылки и ее пример нужен
     @Column({
@@ -27,7 +32,7 @@ export class AccountEntity {
     @Column({
         type: 'enum',
         enum: AccountRole,
-        default: AccountRole.client,
+        default: AccountRole.owner,
     })
     role: AccountRole;
 }

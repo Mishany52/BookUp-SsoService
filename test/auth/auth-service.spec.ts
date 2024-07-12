@@ -1,9 +1,9 @@
 import { mockDeep } from 'jest-mock-extended';
 import { AccountService } from 'src/domains/account/account.service';
-import { GetAccountDto } from 'src/domains/account/dtos/get-account.dto';
+import { GetAccountDto } from 'src/api/http/controllers/dto/account/get-account.dto';
 import { AuthService } from 'src/domains/auth/auth.service';
 import { TokensService } from 'src/domains/token/token.service';
-import { AccountRepository } from 'src/infrastructure/repository/account/repository';
+import { AccountRepository } from 'src/infrastructure/repository/account/account.repository';
 import { Account } from 'src/infrastructure/types/account';
 import {
     ACCOUNT_ALREADY_CREATED,
@@ -27,6 +27,7 @@ const signUpDto = {
     email: 'hisEmailadress@yandex.com',
     password: 'password',
     phone: '+79000000000',
+    fio: 'Иванов Иван Иванович',
 };
 const signInDtoByEmail = {
     email: 'hisEmailadress@yandex.com',
@@ -43,6 +44,7 @@ const account: Account = {
     phone: '+79000000000',
     role: AccountRole.client,
     imgUrl: null,
+    fio: 'Иванов Иван Иванович',
 };
 
 const tokens = { refreshToken: 'refresh_token', accessToken: 'access_token' } as JwtSignDto;
