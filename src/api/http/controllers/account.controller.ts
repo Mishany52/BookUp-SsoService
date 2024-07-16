@@ -18,6 +18,7 @@ import { PayloadDto } from 'src/domains/token/dto/payload.dto';
 import { JwtAuthGuard } from '../../../guards/jwt-authenticated.guard';
 import { UUID } from 'crypto';
 import { AccountUpdateDto } from 'src/domains/account/dtos/update-account.dto';
+
 @ApiTags('Accounts')
 @Controller('account')
 export class AccountController {
@@ -50,7 +51,15 @@ export class AccountController {
     }
 
     @Get('get-info/:id')
-    async findOne(@Param('id', ParseUUIDPipe) id: UUID): Promise<GetAccountDto> {
+    @ApiOperation({})
+    async findOneById(@Param('id', ParseUUIDPipe) id: UUID): Promise<GetAccountDto> {
         return this._accountService.getAccount(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get-info')
+    @ApiOperation({})
+    async findOne(@reqAccount() req: PayloadDto) {
+        return this._accountService.getAccount(req.accountId);
     }
 }

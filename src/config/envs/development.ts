@@ -2,7 +2,7 @@ export const config = {
     db: {
         type: 'postgres',
         synchronize: false,
-        logging: false,
+        logging: true,
         host: `${process.env.POSTGRES_HOST}`,
         port: `${process.env.POSTGRES_PORT}`,
         username: `${process.env.POSTGRES_USER}`,

@@ -13,6 +13,7 @@ import {
     ACCOUNT_NOT_FOUND_BY_PHONE,
     ACCOUNT_NOT_UPDATE,
 } from 'src/infrastructure/constants/http-messages/errors';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
@@ -50,11 +51,9 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND);
         }
     }
-    async getById(accountId: string): Promise<Account | undefined> {
+    async getById(accountId: UUID): Promise<Account | undefined> {
         try {
-            const account = await this._accountRepository.findOne({
-                where: { id: accountId },
-            });
+            const account = await this._accountRepository.findOneBy({ id: accountId });
             return account;
         } catch (error) {
             throw new Error(ACCOUNT_NOT_FOUND_BY_ID);
