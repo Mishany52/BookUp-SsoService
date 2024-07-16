@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { AccountService } from '../account/account.service';
 import { SignUpDto } from './dtos/sign-up.dto';
-import { GetAccountDto } from '../account/dtos/get-account.dto';
+import { GetAccountDto } from '../../api/http/controllers/dto/account/get-account.dto';
 import { TokensService } from '../token/token.service';
 import { Account } from 'src/infrastructure/types/account';
-import { IAccountRepository } from '../account/account.repository.interface';
+import { IAccountRepository } from '../interface/account/account.repository.interface';
 import { SingInDtoByPhone } from './dtos/sing-in-by-phone.dto';
 import { SingInDtoByEmail } from './dtos/sign-on-by-email.dto';
 import { PayloadDto } from '../token/dto/payload.dto';
@@ -16,6 +16,7 @@ import {
     ACCOUNT_CREATION_FAILED,
     ACCOUNT_NOT_FOUND,
     REFRESH_FAILED,
+    ACCOUNT_NOT_FOUND_BY_EMAIL,
 } from 'src/infrastructure/constants/http-messages/errors';
 const accountRepo = () => Inject('accountRepo');
 @Injectable()
@@ -35,8 +36,7 @@ export class AuthService {
         if (!newAccount) {
             throw new HttpException(ACCOUNT_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        const accountDto = new GetAccountDto(newAccount);
-        return accountDto;
+        return newAccount;
     }
 
     public async signIn(singInDto: SingInDtoByEmail | SingInDtoByPhone): Promise<JwtSignDto> {
@@ -50,7 +50,7 @@ export class AuthService {
         }
 
         if (!account) {
-            throw new HttpException(INVALID_SIGN_IN_DATA, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(ACCOUNT_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         const payload = new PayloadDto(account);
         const tokens = this._tokenService.generateTokens(payload);
@@ -68,7 +68,7 @@ export class AuthService {
 
         account = await this._accountRepository.getByEmail(accountEmail);
         if (!account) {
-            throw new HttpException(ACCOUNT_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new HttpException(ACCOUNT_NOT_FOUND_BY_EMAIL, HttpStatus.NOT_FOUND);
         }
 
         if (account && (await this._accountService.checkPassword(password, account.password))) {
@@ -80,7 +80,7 @@ export class AuthService {
 
     public async refresh(refreshToken: string): Promise<JwtSignDto> {
         const payload = this._tokenService.getPayload(refreshToken);
-        const isAvailable = this._tokenService.validateRefreshToken(payload, refreshToken);
+        const isAvailable = await this._tokenService.validateRefreshToken(payload, refreshToken);
         if (!isAvailable) {
             throw new HttpException(REFRESH_FAILED, HttpStatus.UNAUTHORIZED);
         }
