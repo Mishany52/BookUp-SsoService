@@ -28,9 +28,10 @@ import { IAccountSearchByIdResponse } from 'src/domains/interface/account/accoun
 @Controller('account')
 export class AccountController {
     constructor(private readonly _accountService: AccountService) {}
+
     @ApiOperation({ summary: 'Получение всех пользователей' })
     @ApiResponse({ status: 200 })
-    @Post()
+    @Post('list')
     async getAccounts(@Body() accountUuids: UUID[]) {
         const accounts = await this._accountService.getAccountsByIds(accountUuids);
         return accounts.map((account: Account) => {
@@ -41,12 +42,7 @@ export class AccountController {
         });
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('check-jwt')
-    helloJwt(@reqAccount() req: PayloadDto): string {
-        return 'Hello World ' + req.accountId;
-    }
-
+    @ApiOperation({})
     @Put('update/:id')
     async update(
         @Param('id', ParseUUIDPipe) id: UUID,
@@ -93,9 +89,9 @@ export class AccountController {
         }
     }
 
+    @ApiOperation({})
     @UseGuards(JwtAuthGuard)
     @Get('get-info')
-    @ApiOperation({})
     async findOneByToken(@reqAccount() req: PayloadDto) {
         return this._accountService.getAccountById(req.accountId);
     }
