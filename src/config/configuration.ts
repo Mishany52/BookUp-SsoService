@@ -27,3 +27,16 @@ export const configuration = async (): Promise<Config> => {
     // object deep merge
     return util.merge(config, environment);
 };
+
+export class ConfigService {
+    private _config: Config;
+
+    constructor() {
+        configuration().then((config) => (this._config = config));
+    }
+
+    // Generic get method to handle all configuration values
+    get<K extends keyof Config>(key: K): Config[K] {
+        return this._config[key];
+    }
+}
