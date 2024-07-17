@@ -2,6 +2,7 @@ export const config = {
     db: {
         entities: [`${__dirname}/../../entity/**/*.{js,ts}`],
     },
+    apiName: process.env.API_NAME,
     jwtAccessSecrete: process.env.JWT_SECRET,
     jwtRefreshSecrete: process.env.JWT_REFRESH_SECRET,
     jwtRefreshExpires: process.env.JWT_REFRESH_EXPIRES,
