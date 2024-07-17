@@ -92,4 +92,11 @@ export class AccountController {
             };
         }
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get-info')
+    @ApiOperation({})
+    async findOneByToken(@reqAccount() req: PayloadDto) {
+        return this._accountService.getAccountById(req.accountId);
+    }
 }

@@ -1,10 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable filenames/match-exported */
 import * as path from 'path';
-import { DataSource } from 'typeorm';
+import { DataSource, SimpleConsoleLogger } from 'typeorm';
 import { config } from 'dotenv';
+import { SSOLogger } from './infrastructure/logger/logger';
 
 config({ path: '.env' });
+const logger = new SSOLogger();
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const AppDataSource = new DataSource({
     type: 'postgres',
@@ -20,10 +23,10 @@ const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
     .then(() => {
-        console.log('Data Source has been initialized!');
+        logger.verbose('Data Source has been initialized!');
     })
     .catch((err) => {
-        console.error('Error during Data Source initialization', err);
+        logger.verbose('Error during Data Source initialization', err);
     });
 
 export default AppDataSource;

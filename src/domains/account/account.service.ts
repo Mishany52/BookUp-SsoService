@@ -33,8 +33,10 @@ export class AccountService {
 
     async create(account: CreateAccountDto): Promise<GetAccountDto> {
         const hashPassword = await argon2.hash(account.password);
-        const encrypted: CreateAccountDto = { ...account, password: hashPassword };
-        const newAccount = await this._accountRepository.create(encrypted);
+        const newAccount = await this._accountRepository.create({
+            ...account,
+            password: hashPassword,
+        });
         const getAccountDto = new GetAccountDto(newAccount);
         return getAccountDto;
     }

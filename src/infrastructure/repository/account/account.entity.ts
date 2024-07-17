@@ -1,12 +1,14 @@
 import { Exclude } from 'class-transformer';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { AccountRole } from '../../../domains/account/enums/account-role';
+import { UUID } from 'crypto';
+
 import { IAccount } from 'src/domains/interface/account/account.interface';
 import { MinLength } from 'class-validator';
 @Entity({ name: 'accounts' })
 export class AccountEntity implements IAccount {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id: UUID;
 
     @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
     email: string;

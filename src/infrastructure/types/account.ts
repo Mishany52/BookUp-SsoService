@@ -1,6 +1,7 @@
+import { UUID } from 'crypto';
 import { AccountRole } from '../../domains/account/enums/account-role';
 export type Account = {
-    id?: string;
+    id: UUID;
     email: string;
     password?: string;
     phone: string;

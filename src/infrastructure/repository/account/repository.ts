@@ -53,9 +53,7 @@ export class AccountRepository implements IAccountRepository {
     }
     async getById(accountId: UUID): Promise<Account | undefined> {
         try {
-            const account = await this._accountRepository.findOne({
-                where: { id: accountId },
-            });
+            const account = await this._accountRepository.findOneBy({ id: accountId });
             return account;
         } catch (error) {
             throw new Error(ACCOUNT_NOT_FOUND_BY_ID);
