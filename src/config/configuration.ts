@@ -28,15 +28,18 @@ export const configuration = async (): Promise<Config> => {
     return util.merge(config, environment);
 };
 
-export class ConfigService {
-    private _config: Config;
+export type Leaves<T> = T extends object
+    ? {
+          [K in keyof T]: `${Exclude<K, symbol>}${Leaves<T[K]> extends never
+              ? ''
+              : `.${Leaves<T[K]>}`}`;
+      }[keyof T]
+    : never;
 
-    constructor() {
-        configuration().then((config) => (this._config = config));
-    }
-
-    // Generic get method to handle all configuration values
-    get<K extends keyof Config>(key: K): Config[K] {
-        return this._config[key];
-    }
-}
+export type LeafTypes<T, S extends string> = S extends `${infer T1}.${infer T2}`
+    ? T1 extends keyof T
+        ? LeafTypes<T[T1], T2>
+        : never
+    : S extends keyof T
+      ? T[S]
+      : never;

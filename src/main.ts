@@ -5,15 +5,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SSOLogger } from './infrastructure/logger/logger';
 import { middleware } from './app.middleware';
 import * as cookieParser from 'cookie-parser';
-import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { LoggerInterceptor } from './common/logger/http-logger';
 import { HttpExceptionFilter } from './common/exception/exception-filter';
+import { TypedConfigService } from './config/typed-config.service';
 
 async function bootstrap() {
     const logger = new SSOLogger();
     const app = await NestFactory.create(AppModule);
-    const configService = app.get(ConfigService);
+    const configService = app.get(TypedConfigService);
     const PORT = configService.get('apiPort') || 3000;
 
     app.use(cookieParser());

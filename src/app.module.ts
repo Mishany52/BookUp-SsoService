@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { AccountModule } from './domains/account/account.module';
 import { AuthModule } from './domains/auth/auth.module';
-import { configuration } from './config/configuration';
 import { TokensModule } from './domains/token/token.module';
+import { TypedConfigModule } from './config/typed-config.module';
 @Module({
     imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-            load: [configuration],
-        }),
+        TypedConfigModule,
         TypeOrmModule.forRootAsync({
             useFactory: (config: ConfigService) => ({
                 ...config.get<TypeOrmModuleAsyncOptions>('db'),
