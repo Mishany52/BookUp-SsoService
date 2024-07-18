@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountService } from '../../../domains/account/account.service';
-import { Account } from 'src/infrastructure/types/account';
 import { AccountRole } from 'src/domains/account/enums/account-role';
 import { GetAccountDto } from 'src/api/http/controllers/dto/account/get-account.dto';
 import { reqAccount } from 'src/infrastructure/decorators/req-account.decorator';
@@ -24,6 +23,8 @@ import { MessagePattern } from '@nestjs/microservices';
 
 import { AccountIdDto } from 'src/api/http/controllers/dto/account/account-id.dto';
 import { IAccountSearchByIdResponse } from 'src/domains/interface/account/account-search-by-id-response.interface';
+import { IAccount } from 'src/domains/interface/account/account.interface';
+import { IAccountDeactivateByIdResponse } from 'src/domains/interface/account/account-deactivate-by-id-response.interface';
 @ApiTags('Accounts')
 @Controller('account')
 export class AccountController {
@@ -34,7 +35,7 @@ export class AccountController {
     @Post('list')
     async getAccounts(@Body() accountUuids: UUID[]) {
         const accounts = await this._accountService.getAccountsByIds(accountUuids);
-        return accounts.map((account: Account) => {
+        return accounts.map((account: IAccount) => {
             if (account.role == AccountRole.admin) {
                 return;
             }
@@ -49,6 +50,42 @@ export class AccountController {
         @Body(ValidationPipe) accountUpdateDto: AccountUpdateDto,
     ): Promise<GetAccountDto> {
         return this._accountService.updateAccount(id, accountUpdateDto);
+    }
+
+    @MessagePattern({ cmd: 'deactivate_account_by_id' })
+    async deactivateAccount(accountId: UUID): Promise<IAccountDeactivateByIdResponse> {
+        if (!accountId) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'account_deactivate_by_id_bad_request',
+                data: null,
+                errors: null,
+            };
+        }
+        try {
+            const account = await this._accountService.deactivate(accountId);
+            if (!account) {
+                return {
+                    status: HttpStatus.NOT_FOUND,
+                    message: 'account_deactivate_by_id_not_found',
+                    data: null,
+                    errors: null,
+                };
+            }
+            return {
+                status: HttpStatus.OK,
+                message: 'account_deactivate_by_id_success',
+                data: account,
+                errors: null,
+            };
+        } catch (e) {
+            return {
+                status: HttpStatus.PRECONDITION_FAILED,
+                message: 'account_deactivate_by_id_precondition_failed',
+                data: null,
+                errors: e.errors,
+            };
+        }
     }
 
     @MessagePattern({ cmd: 'account_search_by_account_id' })

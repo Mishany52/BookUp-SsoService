@@ -9,7 +9,7 @@ import { GetAccountDto } from 'src/api/http/controllers/dto/account/get-account.
 import {
     ACCOUNT_NOT_FOUND_BY_ID,
     ACCOUNTS_NOT_FOUND_BY_IDS,
-} from '../../src/infrastructure/constants/http-messages/errors';
+} from '../../src/infrastructure/constants/http-messages/errors.constants';
 import { v4 as uuidv4 } from 'uuid';
 import * as argon2 from 'argon2';
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Res, Get, Req } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Res, Get, Req, HttpStatus } from '@nestjs/common';
 import { SignUpDto } from './dto/auth/sign-up.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/domains/auth/auth.service';
@@ -9,6 +9,8 @@ import { AccessTokenDto } from 'src/domains/dtos/access-token.dto';
 import { JwtRefreshGuard } from 'src/guards/jwt-refresh.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-authenticated.guard';
 import { EXPIRE_TIME } from 'src/infrastructure/constants/auth/jwt.constants';
+import { MessagePattern } from '@nestjs/microservices';
+import { IAccountSingUpResponse } from 'src/domains/interface/account/account-sign-up.response.interface';
 import { SingInDtoByPhone } from './dto/auth/sing-in-by-phone.dto';
 @ApiTags('Authentication')
 @Controller('auth')
@@ -17,11 +19,41 @@ export class AuthController {
 
     @ApiOperation({ summary: 'Создание аккаунта' })
     @ApiResponse({ status: 201 })
-    @Post('sign-up')
-    async signUp(@Body() signUpDto: SignUpDto) {
-        return this._authService.singUp(signUpDto);
+    @MessagePattern({ cmd: 'account_sing_up' })
+    async signUp(signUpDto: SignUpDto): Promise<IAccountSingUpResponse> {
+        if (!signUpDto || Object.keys(signUpDto).length === 0) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'account_sign_up_bad_request',
+                data: null,
+                errors: null,
+            };
+        }
+        try {
+            const account = await this._authService.singUp(signUpDto);
+            if (!account) {
+                return {
+                    status: HttpStatus.BAD_REQUEST,
+                    message: 'account_sign_up_bad_request',
+                    data: null,
+                    errors: null,
+                };
+            }
+            return {
+                status: HttpStatus.OK,
+                message: 'account_sign_up_success',
+                data: account,
+                errors: null,
+            };
+        } catch (e) {
+            return {
+                status: e.status,
+                message: e.response,
+                data: null,
+                errors: e.errors,
+            };
+        }
     }
-
     @Post('sign-in')
     public async jwtLogin(
         @Body() accountDto: SingInDtoByEmail | SingInDtoByPhone,

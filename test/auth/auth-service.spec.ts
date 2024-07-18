@@ -12,7 +12,7 @@ import {
     ACCOUNT_NOT_FOUND_BY_EMAIL,
     EMAIL_OR_PHONE_REQUIRED,
     REFRESH_FAILED,
-} from 'src/infrastructure/constants/http-messages/errors';
+} from 'src/infrastructure/constants/http-messages/errors.constants';
 import { randomUUID } from 'crypto';
 import { AccountRole } from 'src/domains/account/enums/account-role';
 import { JwtSignDto } from '../../src/domains/token/dto/jwt-sign.dto';
