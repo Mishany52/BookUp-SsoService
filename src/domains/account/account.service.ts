@@ -10,7 +10,7 @@ import {
     ACCOUNTS_NOT_FOUND_BY_IDS,
     ACCOUNT_NOT_FOUND_BY_ID,
     ACCOUNT_NOT_UPDATE,
-} from '../../infrastructure/constants/http-messages/errors';
+} from '../../infrastructure/constants/http-messages/errors.constants';
 
 const accountRepo = () => Inject('accountRepo');
 
@@ -39,6 +39,17 @@ export class AccountService {
         });
         const getAccountDto = new GetAccountDto(newAccount);
         return getAccountDto;
+    }
+    async deactivate(accountId: UUID): Promise<GetAccountDto> {
+        const account = await this.getAccountById(accountId);
+        // Обновляем поля сущности
+        Object.assign(account, (account.active = false));
+
+        const accountUpdate = await this._accountRepository.update(account);
+        if (!accountUpdate) {
+            throw new HttpException(ACCOUNT_NOT_UPDATE, HttpStatus.BAD_REQUEST);
+        }
+        return new GetAccountDto(account);
     }
     async isAccount(accountData: Partial<Account>): Promise<boolean> {
         if (!accountData.email && !accountData.phone) {
@@ -80,7 +91,7 @@ export class AccountService {
         // Обновляем поля сущности
         Object.assign(account, accountUpdateDto);
 
-        const accountUpdate = await this._accountRepository.save(account);
+        const accountUpdate = await this._accountRepository.update(account);
         if (!accountUpdate) {
             throw new HttpException(ACCOUNT_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
