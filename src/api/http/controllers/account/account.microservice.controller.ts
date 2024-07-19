@@ -7,6 +7,7 @@ import { AccountIdDto } from 'src/api/http/controllers/dto/account/account-id.dt
 import { AccountService } from 'src/domains/account/account.service';
 import { IAccountDeactivateByIdResponse } from 'src/domains/interface/account/account-deactivate-by-id-response.interface';
 import { IAccountSearchByIdResponse } from 'src/domains/interface/account/account-search-by-id-response.interface';
+import { AccountMessages } from 'src/infrastructure/constants/microservice-messages/response-account.messages';
 
 @ApiTags('Accounts')
 @Controller('account')
@@ -17,7 +18,7 @@ export class AccountMicroserviceController {
         if (!accountDto.accountId) {
             return {
                 status: HttpStatus.BAD_REQUEST,
-                message: 'account_search_id_bad_request',
+                message: AccountMessages.SEARCH_ID_BAD_REQUEST,
                 account: null,
                 errors: null,
             };
@@ -28,7 +29,7 @@ export class AccountMicroserviceController {
             if (!account) {
                 return {
                     status: HttpStatus.NOT_FOUND,
-                    message: 'account_search_by_id_not_found',
+                    message: AccountMessages.SEARCH_BY_ID_NOT_FOUND,
                     account: null,
                     errors: null,
                 };
@@ -36,14 +37,14 @@ export class AccountMicroserviceController {
 
             return {
                 status: HttpStatus.OK,
-                message: 'account_search_by_id_success',
+                message: AccountMessages.SEARCH_BY_ID_FOUND,
                 account: account,
                 errors: null,
             };
         } catch (e) {
             return {
                 status: HttpStatus.PRECONDITION_FAILED,
-                message: 'account_search_by_id_precondition_failed',
+                message: AccountMessages.SEARCH_BY_ID_PRECONDITION_FAILED,
                 account: null,
                 errors: e.errors,
             };
@@ -55,7 +56,7 @@ export class AccountMicroserviceController {
         if (!accountId) {
             return {
                 status: HttpStatus.BAD_REQUEST,
-                message: 'account_deactivate_by_id_bad_request',
+                message: AccountMessages.DEACTIVATE_BY_ID_BAD_REQUEST,
                 data: null,
                 errors: null,
             };
@@ -65,21 +66,21 @@ export class AccountMicroserviceController {
             if (!account) {
                 return {
                     status: HttpStatus.NOT_FOUND,
-                    message: 'account_deactivate_by_id_not_found',
+                    message: AccountMessages.DEACTIVATE_BY_ID_NOT_FOUND,
                     data: null,
                     errors: null,
                 };
             }
             return {
                 status: HttpStatus.OK,
-                message: 'account_deactivate_by_id_success',
+                message: AccountMessages.DEACTIVATE_BY_ID_SUCCESS,
                 data: account,
                 errors: null,
             };
         } catch (e) {
             return {
                 status: HttpStatus.PRECONDITION_FAILED,
-                message: 'account_deactivate_by_id_precondition_failed',
+                message: AccountMessages.DEACTIVATE_BY_ID_PRECONDITION_FAILED,
                 data: null,
                 errors: e.errors,
             };

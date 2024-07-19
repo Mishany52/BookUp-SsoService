@@ -4,6 +4,8 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignUpDto } from '../dto/auth/sign-up.dto';
 import { AuthService } from 'src/domains/auth/auth.service';
 import { IAccountSingUpResponse } from 'src/domains/interface/account/account-sign-up.response.interface';
+import { SING_UP_BAD_REQUEST } from 'src/infrastructure/constants/microservice-messages/response-auth.messages';
+import { SING_UP_SUCCESS } from '../../../../infrastructure/constants/microservice-messages/response-auth.messages';
 
 @ApiTags('Authentication')
 @Controller('authMicroservice')
@@ -17,7 +19,7 @@ export class AuthMicroserviceController {
         if (!signUpDto || Object.keys(signUpDto).length === 0) {
             return {
                 status: HttpStatus.BAD_REQUEST,
-                message: 'account_sign_up_bad_request',
+                message: SING_UP_BAD_REQUEST,
                 data: null,
                 errors: null,
             };
@@ -27,14 +29,14 @@ export class AuthMicroserviceController {
             if (!account) {
                 return {
                     status: HttpStatus.BAD_REQUEST,
-                    message: 'account_sign_up_bad_request',
+                    message: SING_UP_BAD_REQUEST,
                     data: null,
                     errors: null,
                 };
             }
             return {
                 status: HttpStatus.OK,
-                message: 'account_sign_up_success',
+                message: SING_UP_SUCCESS,
                 data: account,
                 errors: null,
             };

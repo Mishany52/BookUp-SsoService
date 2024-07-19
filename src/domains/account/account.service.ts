@@ -43,10 +43,9 @@ export class AccountService {
     }
     async deactivate(accountId: UUID): Promise<GetAccountDto> {
         const account = await this.getAccountById(accountId);
-        // Обновляем поля сущности
-        Object.assign(account, (account.active = false));
 
-        const accountUpdate = await this._accountRepository.update(account);
+        const accountUpdate = await this._accountRepository.update({ ...account, active: false });
+
         if (!accountUpdate) {
             throw new HttpException(ACCOUNT_NOT_UPDATE, HttpStatus.BAD_REQUEST);
         }
