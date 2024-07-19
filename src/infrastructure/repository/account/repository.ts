@@ -25,7 +25,7 @@ export class AccountRepository implements IAccountRepository {
     async create(createDto: CreateAccountDto): Promise<Account> {
         const account = this._accountRepository.create(createDto);
         try {
-            this._accountRepository.save(account);
+            await this._accountRepository.save(account);
             //!Потом сменить на mapper
             const createdUser: Account = { ...account }; // Assuming simple mapping
             return createdUser;
@@ -53,9 +53,7 @@ export class AccountRepository implements IAccountRepository {
     }
     async getById(accountId: UUID): Promise<Account | undefined> {
         try {
-            const account = await this._accountRepository.findOne({
-                where: { id: accountId },
-            });
+            const account = await this._accountRepository.findOneBy({ id: accountId });
             return account;
         } catch (error) {
             throw new Error(ACCOUNT_NOT_FOUND_BY_ID);
@@ -82,6 +80,6 @@ export class AccountRepository implements IAccountRepository {
         }
     }
     async getAccountsByIds(accountsIds: UUID[]): Promise<Account[]> {
-        return await this._accountRepository.find({ where: { id: In(accountsIds) } });
+        return await this._accountRepository.findBy({ id: In([accountsIds]) });
     }
 }

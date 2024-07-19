@@ -3,6 +3,7 @@ import { AccountService } from '../account/account.service';
 import { SignUpDto } from '../../api/http/controllers/dto/auth/sign-up.dto';
 import { GetAccountDto } from '../../api/http/controllers/dto/account/get-account.dto';
 import { TokensService } from '../token/token.service';
+import { Account } from 'src/infrastructure/types/account';
 import { IAccountRepository } from '../interface/account/account.repository.interface';
 import { SingInDtoByPhone } from '../../api/http/controllers/dto/auth/sing-in-by-phone.dto';
 import { SingInDtoByEmail } from '../../api/http/controllers/dto/auth/sign-on-by-email.dto';
@@ -16,8 +17,7 @@ import {
     ACCOUNT_NOT_FOUND,
     REFRESH_FAILED,
     ACCOUNT_NOT_FOUND_BY_EMAIL,
-} from 'src/infrastructure/constants/http-messages/errors.constants';
-import { IAccount } from '../interface/account/account.interface';
+} from 'src/infrastructure/constants/http-messages/errors';
 const accountRepo = () => Inject('accountRepo');
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
     }
 
     public async signIn(singInDto: SingInDtoByEmail | SingInDtoByPhone): Promise<JwtSignDto> {
-        let account: IAccount;
+        let account: Account;
         if ('email' in singInDto) {
             account = await this._accountRepository.getByEmail(singInDto.email);
         } else if ('phone' in singInDto) {
@@ -60,11 +60,11 @@ export class AuthService {
     public jwtSing(payload: PayloadDto): JwtSignDto {
         return this._tokenService.generateTokens(payload);
     }
-    public async validateAccount(accountEmail: string, password: string): Promise<IAccount | null> {
+    public async validateAccount(accountEmail: string, password: string): Promise<Account | null> {
         if (!accountEmail) {
             throw new Error(EMAIL_OR_PHONE_REQUIRED);
         }
-        let account: IAccount | null = null;
+        let account: Account | null = null;
 
         account = await this._accountRepository.getByEmail(accountEmail);
         if (!account) {
