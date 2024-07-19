@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Account } from 'src/infrastructure/types/account';
 import { AccountEntity } from './account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IAccountRepository } from 'src/domains/interface/account/account.repository.interface';
@@ -14,6 +13,7 @@ import {
     ACCOUNT_NOT_UPDATE,
 } from 'src/infrastructure/constants/http-messages/errors';
 import { UUID } from 'crypto';
+import { IAccount } from 'src/domains/interface/account/account.interface';
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
@@ -22,18 +22,18 @@ export class AccountRepository implements IAccountRepository {
         private readonly _accountRepository: Repository<AccountEntity>,
     ) {}
 
-    async create(createDto: CreateAccountDto): Promise<Account> {
+    async create(createDto: CreateAccountDto): Promise<IAccount> {
         const account = this._accountRepository.create(createDto);
         try {
-            this._accountRepository.save(account);
+            const accountSaved = await this._accountRepository.save(account);
             //!Потом сменить на mapper
-            const createdUser: Account = { ...account }; // Assuming simple mapping
+            const createdUser: IAccount = { ...accountSaved }; // Assuming simple mapping
             return createdUser;
         } catch (error) {
             throw new Error(ACCOUNT_CREATION_FAILED);
         }
     }
-    async save(accountUpdate: Account): Promise<Account> {
+    async update(accountUpdate: IAccount): Promise<IAccount> {
         try {
             const account = await this._accountRepository.save(accountUpdate);
             return account;
@@ -41,7 +41,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_UPDATE);
         }
     }
-    async getByEmailAndPhone(accountData: Partial<Account>): Promise<Account | undefined> {
+    async getByEmailAndPhone(accountData: Partial<IAccount>): Promise<IAccount | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: [{ email: accountData.email }, { phone: accountData.phone }],
@@ -51,7 +51,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND);
         }
     }
-    async getById(accountId: UUID): Promise<Account | undefined> {
+    async getById(accountId: UUID): Promise<IAccount | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: { id: accountId },
@@ -61,7 +61,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND_BY_ID);
         }
     }
-    async getByEmail(accountEmail: string): Promise<Account | undefined> {
+    async getByEmail(accountEmail: string): Promise<IAccount | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: { email: accountEmail },
@@ -71,7 +71,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND_BY_EMAIL);
         }
     }
-    async getByPhone(accountPhone: string): Promise<Account | undefined> {
+    async getByPhone(accountPhone: string): Promise<IAccount | undefined> {
         try {
             const account = await this._accountRepository.findOne({
                 where: { phone: accountPhone },
@@ -81,7 +81,7 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_FOUND_BY_PHONE);
         }
     }
-    async getAccountsByIds(accountsIds: UUID[]): Promise<Account[]> {
+    async getAccountsByIds(accountsIds: UUID[]): Promise<IAccount[]> {
         return await this._accountRepository.find({ where: { id: In(accountsIds) } });
     }
 }

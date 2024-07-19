@@ -1,15 +1,4 @@
-import { IsEmail, IsEnum, IsPhoneNumber, IsString, IsUrl } from 'class-validator';
-import { AccountRole } from '../../../../../domains/account/enums/account-role';
+import { PartialType } from '@nestjs/swagger';
+import { CreateAccountDto } from './create-account.dto';
 
-export class AccountUpdateDto {
-    @IsEmail()
-    email: string;
-    @IsPhoneNumber('RU')
-    phone: string;
-    @IsString()
-    password: string;
-    @IsUrl()
-    imgUrl: string;
-    @IsEnum(AccountRole)
-    role: AccountRole;
-}
+export class UpdateAccountDto extends PartialType(CreateAccountDto) {}

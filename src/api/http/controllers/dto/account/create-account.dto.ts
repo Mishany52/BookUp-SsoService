@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsEnum, IsUrl } from 'class-validator';
+import { AccountRole } from 'src/domains/account/enums/account-role';
+import { IAccount } from 'src/domains/interface/account/account.interface';
 
-export class CreateAccountDto {
+export class CreateAccountDto implements IAccount {
     @ApiProperty({
         uniqueItems: true,
         example: 'test@gmail.com',
@@ -21,4 +24,13 @@ export class CreateAccountDto {
         example: 'Иванов Иван Иванович',
     })
     fio: string;
+    @IsUrl()
+    @ApiProperty({ example: 'Пока не знаем 2' })
+    imgUrl?: string;
+    @IsEnum(AccountRole)
+    @ApiProperty({ enum: AccountRole, example: AccountRole.client })
+    role: AccountRole;
+    @IsBoolean()
+    @ApiProperty({ example: 'true' })
+    active?: boolean;
 }

@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AccountController } from 'src/api/http/controllers/account.controller';
+import { AccountHttpController } from 'src/api/http/controllers/account/account.http.controller';
 import { AccountService } from './account.service';
 import { AccountRepositoryModule } from 'src/infrastructure/repository/account/account-repository.module';
+import { AccountMicroserviceController } from 'src/api/http/controllers/account/account.microservice.controller';
 @Module({
     imports: [AccountRepositoryModule],
-    controllers: [AccountController],
+    controllers: [AccountHttpController, AccountMicroserviceController],
     providers: [AccountService],
     exports: [AccountService],
 })
