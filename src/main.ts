@@ -5,8 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SSOLogger } from './infrastructure/logger/logger';
 import { middleware } from './app.middleware';
 import * as cookieParser from 'cookie-parser';
-import { ConfigService } from '@nestjs/config';
-import { MicroserviceOptions, TcpOptions, Transport } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { LoggerInterceptor } from './common/logger/http-logger';
 import { HttpExceptionFilter } from './common/exception/exception-filter';
 import { TypedConfigService } from './config/typed-config.service';
@@ -19,6 +18,7 @@ async function bootstrap() {
 
     app.use(cookieParser());
     app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.TCP,
         options: {
@@ -42,6 +42,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     await app.startAllMicroservices();
+
     await app.listen(PORT);
     logger.verbose(`start on port: ${PORT}`);
 }
