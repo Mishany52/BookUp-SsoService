@@ -6,6 +6,15 @@ import { UUID } from 'crypto';
 
 @Injectable()
 export class GetAccountDto implements IAccount {
+    constructor(model: IAccount) {
+        this.id = model.id;
+        this.email = model.email;
+        this.role = model.role;
+        this.fio = model.fio;
+        this.imgUrl = model.imgUrl;
+        this.phone = model.phone;
+        this.active = model.active;
+    }
     @ApiProperty({
         example: 'fe18f1eb-2090-4d97-b9a1-d2a1387e4fb4',
     })
@@ -30,7 +39,7 @@ export class GetAccountDto implements IAccount {
     })
     fio: string;
     @ApiProperty({
-        example: 'Пока не знаем',
+        example: process.env.CONTENT_SERVICE_URL,
     })
     imgUrl: string;
 
@@ -38,13 +47,4 @@ export class GetAccountDto implements IAccount {
         example: true,
     })
     active: boolean;
-    constructor(model: IAccount) {
-        this.id = model.id;
-        this.email = model.email;
-        this.role = model.role;
-        this.fio = model.fio;
-        this.imgUrl = model.imgUrl;
-        this.phone = model.phone;
-        this.active = model.active;
-    }
 }
