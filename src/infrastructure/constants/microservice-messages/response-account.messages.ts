@@ -7,4 +7,8 @@ export enum AccountMessages {
     DEACTIVATE_BY_ID_NOT_FOUND = 'account_deactivate_by_id_not_found',
     DEACTIVATE_BY_ID_SUCCESS = 'account_deactivate_by_id_success',
     DEACTIVATE_BY_ID_PRECONDITION_FAILED = 'account_deactivate_by_id_precondition_failed',
+    UPDATE_BY_ID_PRECONDITION_FAILED = 'account_update_by_id_precondition_failed',
+    UPDATE_BY_ID_BAD_REQUEST = 'account_update_by_id_bad_request',
+    UPDATE_BY_ID_NOT_FOUND = 'account_update_by_id_not_found',
+    UPDATE_BY_ID_SUCCESS = 'account_update_by_id_success',
 }

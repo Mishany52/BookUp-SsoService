@@ -9,7 +9,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtVerifyStrategy } from './strategies/jwt-refresh.strategy';
 import { AuthSerializer } from './auth.serializer';
-import { AuthMicroserviceController } from 'src/api/http/controllers/auth/auth.microservice.controller';
+import { AuthMicroserviceController } from 'src/api/microservice/controllers/auth.microservice.controller';
 
 @Module({
     imports: [AccountModule, AccountRepositoryModule, TokensModule, TokenRepositoryModule],
