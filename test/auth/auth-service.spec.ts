@@ -4,7 +4,6 @@ import { GetAccountDto } from 'src/api/http/controllers/dto/account/get-account.
 import { AuthService } from 'src/domains/auth/auth.service';
 import { TokensService } from 'src/domains/token/token.service';
 import { AccountRepository } from 'src/infrastructure/repository/account/account.repository';
-import { Account } from 'src/infrastructure/types/account';
 import {
     ACCOUNT_ALREADY_CREATED,
     ACCOUNT_CREATION_FAILED,
@@ -17,6 +16,7 @@ import { randomUUID } from 'crypto';
 import { AccountRole } from 'src/domains/account/enums/account-role';
 import { JwtSignDto } from '../../src/domains/token/dto/jwt-sign.dto';
 import { PayloadDto } from 'src/domains/token/dto/payload.dto';
+import { IAccount } from 'src/domains/interface/account/account.interface';
 
 const mockAccountRep = mockDeep<AccountRepository>();
 const mockAccountService = mockDeep<AccountService>();
@@ -28,6 +28,7 @@ const signUpDto = {
     password: 'password',
     phone: '+79000000000',
     fio: 'Иванов Иван Иванович',
+    role: AccountRole.client,
 };
 const signInDtoByEmail = {
     email: 'hisEmailadress@yandex.com',
@@ -37,7 +38,7 @@ const signInDtoByPhone = {
     phone: '+79000000000',
     password: 'password',
 };
-const account: Account = {
+const account: IAccount = {
     id: randomUUID(),
     email: 'hisEmailadress@yandex.com',
     password: 'hashed_password',
@@ -48,7 +49,7 @@ const account: Account = {
 };
 
 const tokens = { refreshToken: 'refresh_token', accessToken: 'access_token' } as JwtSignDto;
-const expectedAccountDto = new GetAccountDto({ ...signUpDto } as Account);
+const expectedAccountDto = new GetAccountDto({ ...signUpDto } as IAccount);
 beforeEach(() => {
     service = new AuthService(mockAccountService, mockAccountRep, mockTokenService);
 });

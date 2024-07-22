@@ -37,4 +37,7 @@ export class AccountEntity implements IAccount {
         default: AccountRole.owner,
     })
     role: AccountRole;
+
+    @Column({ type: 'boolean', nullable: false, default: true })
+    active: boolean;
 }
