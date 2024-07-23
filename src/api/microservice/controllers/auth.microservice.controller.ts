@@ -14,7 +14,7 @@ export class AuthMicroserviceController {
 
     @ApiOperation({ summary: 'Создание аккаунта' })
     @ApiResponse({ status: 201 })
-    @MessagePattern({ cmd: 'account_sing_up' })
+    @MessagePattern({ cmd: 'auth_sing_up' })
     async signUp(signUpDto: SignUpDto): Promise<IAccountSingUpResponse> {
         if (!signUpDto || Object.keys(signUpDto).length === 0) {
             return {
