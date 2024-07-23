@@ -34,7 +34,7 @@ export class AccountEntity implements IAccount {
     @Column({
         type: 'enum',
         enum: AccountRole,
-        default: AccountRole.owner,
+        default: AccountRole.client,
     })
     role: AccountRole;
 
