@@ -86,16 +86,15 @@ export class AccountService {
         if (!account) {
             throw new HttpException(ACCOUNT_NOT_FOUND_BY_ID, HttpStatus.NOT_FOUND);
         }
-        if (accountUpdateDto.password.length != 0) {
-            accountUpdateDto.password = await argon2.hash(accountUpdateDto.password);
-        }
-
         const accountByPhoneAndEmail = await this._accountRepository.getByEmailAndPhone({
             email: accountUpdateDto.email,
             phone: accountUpdateDto.phone,
         });
         if (accountByPhoneAndEmail) {
             throw new HttpException(EMAIL_OR_PHONE_BUSY, HttpStatus.BAD_REQUEST);
+        }
+        if ('password' in accountUpdateDto && accountUpdateDto.password.length != 0) {
+            accountUpdateDto.password = await argon2.hash(accountUpdateDto.password);
         }
 
         // Обновляем поля сущности

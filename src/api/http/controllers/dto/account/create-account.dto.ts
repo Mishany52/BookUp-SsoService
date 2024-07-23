@@ -25,7 +25,7 @@ export class CreateAccountDto implements IAccount {
     })
     fio: string;
     @IsUrl()
-    @ApiProperty({ example: 'Пока не знаем 2' })
+    @ApiProperty({ example: `${process.env.CONTENT_SERVICE_URL}` })
     imgUrl?: string;
     @IsEnum(AccountRole)
     @ApiProperty({ enum: AccountRole, example: AccountRole.client })

@@ -15,4 +15,5 @@ export const config = {
 
     frontUri: process.env.FRONT_URI,
     frontPort: process.env.FRONT_PORT,
+    contentServiceUrl: process.env.CONTENT_SERVICE_URL,
 };

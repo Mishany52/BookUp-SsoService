@@ -44,7 +44,7 @@ export class AccountRepository implements IAccountRepository {
     async getByEmailAndPhone(accountData: Partial<IAccount>): Promise<IAccount | undefined> {
         try {
             const account = await this._accountRepository.findOne({
-                where: [{ email: accountData.email }, { phone: accountData.phone }],
+                where: [{ email: accountData.email || '' }, { phone: accountData.phone || '' }],
             });
             return account;
         } catch (error) {
