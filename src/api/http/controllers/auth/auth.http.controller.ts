@@ -19,7 +19,7 @@ import { EXPIRE_TIME } from 'src/infrastructure/constants/auth/jwt.constants';
 import { SingInDtoByPhone } from '../dto/auth/sing-in-by-phone.dto';
 import { GetAccountDto } from '../dto/account/get-account.dto';
 @ApiTags('Authentication')
-@Controller('authHttp')
+@Controller('auth')
 export class AuthHttpController {
     constructor(private readonly _authService: AuthService) {}
 

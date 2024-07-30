@@ -14,6 +14,7 @@ import {
 } from 'src/infrastructure/constants/http-messages/errors';
 import { UUID } from 'crypto';
 import { IAccount } from 'src/domains/interface/account/account.interface';
+import { isEmptyObject } from 'src/utils/is-empty-object';
 
 @Injectable()
 export class AccountRepository implements IAccountRepository {
@@ -21,14 +22,28 @@ export class AccountRepository implements IAccountRepository {
         @InjectRepository(AccountEntity)
         private readonly _accountRepository: Repository<AccountEntity>,
     ) {}
+    async checkAccountByEmailAndPhone(
+        email: string,
+        phone: string,
+    ): Promise<{ emailTaken: boolean; phoneTaken: boolean }> {
+        try {
+            const emailAccount = await this._accountRepository.findOneBy({ email });
+            const phoneAccount = await this._accountRepository.findOneBy({ phone });
+
+            return {
+                emailTaken: isEmptyObject(emailAccount),
+                phoneTaken: isEmptyObject(phoneAccount),
+            };
+        } catch (error) {
+            throw new Error(ACCOUNT_NOT_FOUND);
+        }
+    }
 
     async create(createDto: CreateAccountDto): Promise<IAccount> {
         const account = this._accountRepository.create(createDto);
         try {
             const accountSaved = await this._accountRepository.save(account);
-            //!Потом сменить на mapper
-            const createdUser: IAccount = { ...accountSaved }; // Assuming simple mapping
-            return createdUser;
+            return accountSaved;
         } catch (error) {
             throw new Error(ACCOUNT_CREATION_FAILED);
         }
@@ -41,9 +56,9 @@ export class AccountRepository implements IAccountRepository {
             throw new Error(ACCOUNT_NOT_UPDATE);
         }
     }
-    async getByEmailAndPhone(accountData: Partial<IAccount>): Promise<IAccount | undefined> {
+    async getByEmailAndPhone(accountData: Partial<IAccount>): Promise<IAccount[] | undefined> {
         try {
-            const account = await this._accountRepository.findOne({
+            const account = await this._accountRepository.find({
                 where: [{ email: accountData.email || '' }, { phone: accountData.phone || '' }],
             });
             return account;
