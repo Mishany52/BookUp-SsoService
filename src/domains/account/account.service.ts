@@ -13,6 +13,8 @@ import {
 } from '../../infrastructure/constants/http-messages/errors';
 import { IAccount } from '../interface/account/account.interface';
 
+import { CheckAccountDto } from '../dtos/check-account-by-email-and-phone.dto';
+
 const accountRepo = () => Inject('accountRepo');
 
 @Injectable()
@@ -57,7 +59,7 @@ export class AccountService {
             return null;
         }
         const account = await this._accountRepository.getByEmailAndPhone(accountData);
-        if (account) {
+        if (account.length) {
             return true;
         }
         return false;
@@ -77,7 +79,24 @@ export class AccountService {
         const accountsDto = accounts.map((account) => new GetAccountDto(account));
         return accountsDto;
     }
+    async getAccountByEmailAndPhone(accountDto: Partial<IAccount>): Promise<CheckAccountDto> {
+        const accounts = await this._accountRepository.getByEmailAndPhone({
+            email: accountDto.email,
+            phone: accountDto.phone,
+        });
+        const matchingAccount = accounts.find(
+            (account) => account.email === accountDto.email && account.phone === accountDto.phone,
+        );
+        if (matchingAccount) {
+            return new CheckAccountDto(true, true, new GetAccountDto(matchingAccount));
+        }
 
+        const emailTaken = accounts.some((account) => account.email === accountDto.email);
+
+        const phoneTaken = accounts.some((account) => account.phone === accountDto.phone);
+
+        return new CheckAccountDto(emailTaken, phoneTaken, null);
+    }
     async updateAccount(
         accountId: UUID,
         accountUpdateDto: Partial<UpdateAccountDto>,
@@ -90,7 +109,7 @@ export class AccountService {
             email: accountUpdateDto.email,
             phone: accountUpdateDto.phone,
         });
-        if (accountByPhoneAndEmail) {
+        if (accountByPhoneAndEmail.length) {
             throw new HttpException(EMAIL_OR_PHONE_BUSY, HttpStatus.BAD_REQUEST);
         }
         if ('password' in accountUpdateDto && accountUpdateDto.password.length != 0) {
