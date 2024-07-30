@@ -81,7 +81,7 @@ export class AuthHttpController {
         const tokens = await this._authService.refresh(refresh);
         const expireTime = await this._authService.getExpiresDate(EXPIRE_TIME);
 
-        res.cookie('refresh_token', refresh, {
+        res.cookie('refresh_token', tokens.refreshToken, {
             expires: expireTime,
         });
         const accessDto = new AccessTokenDto(tokens);
