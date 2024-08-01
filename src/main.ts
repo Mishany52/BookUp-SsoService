@@ -44,7 +44,14 @@ async function bootstrap() {
     await app.startAllMicroservices();
 
     await app.listen(PORT);
+
     logger.verbose(`start on port: ${PORT}`);
+    logger.verbose(
+        `microservice port start: ${JSON.stringify({
+            host: configService.get('baseUri'),
+            port: configService.get('microservicePort'),
+        })}`,
+    );
 }
 
 bootstrap();
