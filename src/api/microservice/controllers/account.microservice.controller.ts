@@ -1,4 +1,4 @@
-import { Controller, HttpStatus } from '@nestjs/common';
+import { Controller, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { UUID } from 'crypto';
@@ -6,6 +6,7 @@ import { AccountEmailAndPhoneDto } from 'src/api/http/controllers/dto/account/ac
 
 import { AccountIdDto } from 'src/api/http/controllers/dto/account/account-id.dto';
 import { UpdateAccountDto } from 'src/api/http/controllers/dto/account/update-account.dto';
+import { MicroserviceLoggerInterceptor } from 'src/common/logger/microservice-logger';
 import { AccountService } from 'src/domains/account/account.service';
 import { IAccountDeactivateByIdResponse } from 'src/domains/interface/account/account-deactivate-by-id-response.interface';
 import { IAccountCheckByEmailPhoneResponse } from 'src/domains/interface/account/account-is-by-email-and-phone-response.interface';
@@ -15,6 +16,7 @@ import { AccountMessages } from 'src/infrastructure/constants/microservice-messa
 
 @ApiTags('Accounts')
 @Controller('account')
+@UseInterceptors(MicroserviceLoggerInterceptor)
 export class AccountMicroserviceController {
     constructor(private readonly _accountService: AccountService) {}
     @MessagePattern({ cmd: 'account_search_by_account_id' })

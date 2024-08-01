@@ -34,8 +34,8 @@ async function bootstrap() {
     });
 
     middleware(app);
-    app.useGlobalInterceptors(new LoggerInterceptor());
     app.useGlobalFilters(new HttpExceptionFilter(app.get(HttpAdapterHost)));
+    app.useGlobalInterceptors(new LoggerInterceptor());
 
     const config = new DocumentBuilder().setTitle('SSO').setDescription('The auth service').build();
     const document = SwaggerModule.createDocument(app, config);
