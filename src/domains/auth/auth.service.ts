@@ -18,6 +18,7 @@ import {
     ACCOUNT_NOT_FOUND_BY_EMAIL,
 } from 'src/infrastructure/constants/http-messages/errors';
 import { IAccount } from '../interface/account/account.interface';
+
 const accountRepo = () => Inject('accountRepo');
 @Injectable()
 export class AuthService {
@@ -96,5 +97,9 @@ export class AuthService {
 
     public async getExpiresDate(expireTime: number): Promise<Date> {
         return new Date(Date.now() + expireTime);
+    }
+
+    public validateAccessToken(token: string) {
+        return this._tokenService.validateAccessToken(token);
     }
 }

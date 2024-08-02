@@ -38,6 +38,19 @@ export class TokensService {
         };
     }
 
+    public validateAccessToken(accessToken: string) {
+        if (
+            !this._jwtService.verify(accessToken, {
+                secret: this._config.get('jwtAccessSecret'),
+            })
+        ) {
+            return false;
+        }
+
+        const payload = this._jwtService.decode<{ sub: string }>(accessToken);
+        return payload;
+    }
+
     public async validateRefreshToken(data: PayloadDto, refreshToken: string): Promise<boolean> {
         if (
             !this._jwtService.verify(refreshToken, {
