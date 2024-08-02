@@ -10,11 +10,19 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtVerifyStrategy } from './strategies/jwt-refresh.strategy';
 import { AuthSerializer } from './auth.serializer';
 import { AuthMicroserviceController } from 'src/api/microservice/controllers/auth.microservice.controller';
+import { MicroserviceLoggerInterceptor } from 'src/common/logger/microservice-logger';
 
 @Module({
     imports: [AccountModule, AccountRepositoryModule, TokensModule, TokenRepositoryModule],
     controllers: [AuthHttpController, AuthMicroserviceController],
-    providers: [AuthService, AuthSerializer, LocalStrategy, JwtStrategy, JwtVerifyStrategy],
+    providers: [
+        AuthService,
+        AuthSerializer,
+        LocalStrategy,
+        JwtStrategy,
+        JwtVerifyStrategy,
+        MicroserviceLoggerInterceptor,
+    ],
     exports: [AuthService],
 })
 export class AuthModule {}

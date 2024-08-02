@@ -12,7 +12,11 @@ export class LoggerInterceptor implements NestInterceptor {
         const now = Date.now();
         return next.handle().pipe(
             map((data) => {
-                Logger.log(`${method} ${url} ${Date.now() - now}ms`, context.getClass().name)
+                if (data.status > 100 && data.status < 400) {
+                    this._logger.log(`${method} ${url} ${Date.now() - now}ms`);
+                } else {
+                    this._logger.error(`${method} ${url} ${Date.now() - now}ms`);
+                }
                 return data;
             }),
         );
