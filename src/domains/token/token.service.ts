@@ -6,6 +6,7 @@ import { JwtSignDto } from './dto/jwt-sign.dto';
 import { PayloadDto } from './dto/payload.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../../infrastructure/types/jwt-payload';
+import { AccountRole } from '../account/enums/account-role';
 
 const tokenRepo = () => Inject('tokenRepo');
 @Injectable()
@@ -30,7 +31,7 @@ export class TokensService {
     public generateTokens(payloadDto: PayloadDto): JwtSignDto {
         const payload: JwtPayload = { sub: payloadDto.accountId, role: payloadDto.role };
 
-        const tokenRef = this._getRefreshToken(payload.sub);
+        const tokenRef = this._getRefreshToken(payload);
         const tokenAcc = this._jwtService.sign(payload);
         return {
             refreshToken: tokenRef,
@@ -47,7 +48,7 @@ export class TokensService {
             return false;
         }
 
-        const payload = this._jwtService.decode<{ sub: string }>(accessToken);
+        const payload = this._jwtService.decode<{ sub: string, role: AccountRole }>(accessToken);
         return payload;
     }
 
@@ -83,9 +84,9 @@ export class TokensService {
         }
     }
 
-    private _getRefreshToken(sub: string): string {
+    private _getRefreshToken(payload: JwtPayload): string {
         return this._jwtService.sign(
-            { sub },
+            { ...payload },
             {
                 secret: this._config.get('jwtRefreshSecrete'),
                 expiresIn: this._config.get('jwtRefreshExpires'),

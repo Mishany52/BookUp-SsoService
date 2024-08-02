@@ -52,6 +52,7 @@ export class AccountHttpController {
     @UseGuards(JwtAuthGuard)
     @Get('get-info')
     async findOneByToken(@reqAccount() req: PayloadDto): Promise<GetAccountDto> {
-        return this._accountService.getAccountById(req.accountId);
+        const data = await this._accountService.getAccountById(req.accountId);
+        return data
     }
 }

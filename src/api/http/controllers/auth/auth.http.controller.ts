@@ -79,6 +79,7 @@ export class AuthHttpController {
     ): Promise<AccessTokenDto> {
         const refresh: string = req.cookies.refresh_token;
         const tokens = await this._authService.refresh(refresh);
+        const data = await this._authService.validateAccessToken(tokens.accessToken)
         const expireTime = await this._authService.getExpiresDate(EXPIRE_TIME);
 
         res.cookie('refresh_token', tokens.refreshToken, {
