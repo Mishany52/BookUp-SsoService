@@ -17,7 +17,12 @@ async function bootstrap() {
     const PORT = configService.get('apiPort') || 3000;
 
     app.use(cookieParser());
-    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+            whitelist: true,
+        }),
+    );
 
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.TCP,

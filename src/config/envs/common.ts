@@ -11,7 +11,7 @@ export const config = {
     apiPort: process.env.API_PORT,
 
     baseUri: process.env.BASE_URI,
-    microservicePort: process.env.MICROSERVICE_PORT,
+    microservicePort: process.env.SSO_MICROSERVICE_PORT,
 
     frontUri: process.env.FRONT_URI,
     frontPort: process.env.FRONT_PORT,
